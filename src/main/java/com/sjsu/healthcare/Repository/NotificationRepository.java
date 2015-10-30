@@ -6,5 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.ArrayList;
 
 public interface NotificationRepository extends MongoRepository<Notification, String> {
-    public ArrayList<Notification> findByPatientId(String patientId);
+    ArrayList<Notification> findByPatientId(String patientId);
+    Notification findById(String id);
 }
