@@ -2,15 +2,17 @@ package com.sjsu.healthcare.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 import java.util.UUID;
 
 public class Medication {
 
-    private UUID id;
+    //private UUID id;
+    @Id private String id;
     private String name;
-
     @JsonFormat(pattern = "HH:mm")
     private Date time;
 
@@ -18,12 +20,20 @@ public class Medication {
 
     }
 
-    public UUID getId() {
+//    public UUID getId() {
+//        return id;
+//    }
+//
+//    public void setId() {
+//        this.id = UUID.randomUUID();
+//    }
+
+    public String getId() {
         return id;
     }
 
     public void setId() {
-        this.id = UUID.randomUUID();
+        this.id = new ObjectId().toString();
     }
 
     public String getName() {

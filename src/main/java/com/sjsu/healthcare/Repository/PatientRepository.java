@@ -5,6 +5,7 @@ import com.sjsu.healthcare.Model.Patient;
 
 public interface PatientRepository extends MongoRepository<Patient, String> {
 
-    public Patient findById(String Id);
+    Patient findById(String Id);
+    Patient findByUsername(String username);
 
 }
