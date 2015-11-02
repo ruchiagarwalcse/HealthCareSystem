@@ -10,20 +10,47 @@ import com.sjsu.healthcare.Model.Patient;
 
 
 import java.util.List;
+import com.google.common.base.Strings;
 
 @RestController
 public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+    //Homepage check
+    @RequestMapping(value = "api/homepage", method = RequestMethod.GET)
+    public String getHomePage() {
+        return "Welcome to Home Page";
+    }
 
     //Save Patient
     @RequestMapping(value = "api/patients", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity patientPost(@RequestBody Patient p) {
         patientRepository.save(p);
+        //:TODO: Validate the details here, email format should be proper
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    //Login patient with username and password
+    @RequestMapping(value = "api/patient/login", method = RequestMethod.POST)
+    public ResponseEntity loginPatient(@RequestBody Patient p)
+    {
+        Patient patient = null;
+        if(!Strings.isNullOrEmpty(p.getUsername()) && !Strings.isNullOrEmpty(p.getPassword()))
+        {
+            patient = patientRepository.findByUsername(p.getUsername());
+        }
+        if(patient == null)
+        {
+            return new ResponseEntity("Invalid username", HttpStatus.NOT_FOUND);
+        }
+        if(patient.getPassword().equals(p.getPassword()))
+        {
+            return new ResponseEntity(patient.getId(), HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity("Invalid password", HttpStatus.NOT_FOUND);
+    }
     //View Patient
     @RequestMapping(value = "api/patients/{id}", method = RequestMethod.GET)
     public ResponseEntity patientGet(@PathVariable("id") String id) {
@@ -75,7 +102,6 @@ public class PatientService {
         if (p.getFitbitUsername() != null) {
             patient.setFitbitUsername(p.getFitbitUsername());
         }
-
         patientRepository.save(patient);
         return new ResponseEntity(patient, HttpStatus.OK);
     }

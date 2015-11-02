@@ -1,6 +1,8 @@
 package com.sjsu.healthcare.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.Email;
+//import org.springmodules.validation.bean.conf.loader.annotation.handler.Email;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +20,8 @@ public class Patient {
     private int weight;
     private int bmi;
     private long phoneNumber;
+
+   // @Email	//Email format validation
     private String email;
     private String username;
     private String password;
@@ -60,6 +64,7 @@ public class Patient {
         this.phoneNumber = phoneNumber;
     }
 
+    @Email(message = "Email Address is not a valid format")
     public String getEmail() {
         return email;
     }
@@ -173,10 +178,18 @@ public class Patient {
         this.circleOfCare.remove(circleOfCareContact);
     }
 
-    public void addMedication(Medication medication) {this.medicineSchedule.add(medication) ;}
+    public boolean addMedication(Medication medication)
+    {
+        if(medication.getName().isEmpty() || medication.getName().equals(null)
+                || medication.getTime() == null)
+        {
+            return false;
+        }
+        return this.medicineSchedule.add(medication);
+    }
 
     //Remove medication by id
-    public void removeMedicationById(UUID id) {
+    public void removeMedicationById(String id) {
         for (Medication m : this.medicineSchedule)
         {
             if (m.getId().equals(id)) {
@@ -185,4 +198,30 @@ public class Patient {
             }
         }
     }
+
+    //get Medication object from patient
+    public Medication getMedication(String medId)
+    {
+        for(Medication m : this.medicineSchedule)
+        {
+            if(m.getId().equals(medId))
+            {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public boolean medicationExists(String medId)
+    {
+        for(Medication m : this.medicineSchedule)
+        {
+            if(m.getId().equals(medId))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.google.common.base.Strings;
 @RestController
 public class CircleOfCareContactService {
 
@@ -74,4 +74,69 @@ public class CircleOfCareContactService {
         patientRepository.save(patient);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+    //get CIrcleofCare Contact for a patient by patientid and COCID
+    @RequestMapping(value = "api/patient/{pid}/circleofcarebyid/{cid}", method = RequestMethod.GET)
+    public ResponseEntity getCircleOfCareContactsById(@PathVariable("pid") String patientId,
+                                                      @PathVariable("cid") UUID circleOfCareContactId)
+    {
+        Patient patient = patientRepository.findById(patientId);
+        if(patient == null)
+        {
+            return new ResponseEntity( "Requested Patient not found",HttpStatus.NOT_FOUND);
+        }
+        CircleOfCareContact c = patient.getCircleOfCareContactById(circleOfCareContactId);
+        if (c == null){
+           return new ResponseEntity( "Requested CoC not found",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(c,HttpStatus.OK);
+    }
+
+    //update CIrcleofCare Contact for a patient by patientid and COCID
+    @RequestMapping(value = "api/patient/{pid}/updatecircleofcare/{cid}", method = RequestMethod.PUT)
+    public ResponseEntity updateCircleOfCareContactById(@PathVariable("pid") String patientId,
+                                                        @PathVariable("cid") UUID circleOfCareContactId,
+                                                            @RequestBody CircleOfCareContact c)
+    {
+        Patient patient = patientRepository.findById(patientId);
+        CircleOfCareContact circle = null;
+        if(patient == null)
+        {
+            return new ResponseEntity("Patient Id requested not found!", HttpStatus.NOT_FOUND);
+        }
+        circle = patient.getCircleOfCareContactById(circleOfCareContactId);
+        if(circle == null)
+        {
+            return new ResponseEntity( "Requested CircleofCareContact not found",HttpStatus.NOT_FOUND);
+        }
+
+        if(!Strings.isNullOrEmpty(c.getEmail()))
+        //if(!c.getEmail().isEmpty() && !c.getEmail().equals(null))
+        {
+            circle.setEmail(c.getEmail());
+        }
+
+        if(!Strings.isNullOrEmpty(c.getName()))
+        {
+            circle.setName(c.getName());
+        }
+
+        if(!Strings.isNullOrEmpty(c.getPriority()))
+        {
+            circle.setPriority(c.getPriority());
+        }
+
+        if(!Strings.isNullOrEmpty(c.getRelation()))
+        {
+            circle.setRelation(c.getRelation());
+        }
+
+        if(c.getPhoneNumber() != 0)
+        {
+            circle.setPhoneNumber(c.getPhoneNumber());
+        }
+        patientRepository.save(patient);
+        return new ResponseEntity(circle,HttpStatus.OK);
+    }
+
 }
