@@ -17,8 +17,10 @@ public class NotificationService {
 
     //Save new notification
     @RequestMapping(value = "api/notification", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity notificationPost(@RequestBody Notification notification) {
+    public ResponseEntity notificationPost(@RequestBody Notification notification)
+    {
         notification.setCreatedAt();
+        notification.setNotificationSent(false);
         notificationRepository.save(notification);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -29,4 +31,22 @@ public class NotificationService {
         ArrayList<Notification> notifications = notificationRepository.findByPatientId(patientId);
         return new ResponseEntity(notifications, HttpStatus.OK);
     }
+
+    //update notificationFlag to true when notification is sent
+    @RequestMapping(value = "api/notification/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity notificationSentUpdate(@PathVariable("id") String notificationId)
+    {
+        Notification notification;
+        try {
+             notification = notificationRepository.findById(notificationId);
+        } catch (Exception e){
+            return new ResponseEntity("Notification Id requested not found!", HttpStatus.NOT_FOUND);
+        }
+        notification.setNotificationSent(true);
+        notificationRepository.save(notification);
+        return new ResponseEntity(notification, HttpStatus.OK);
+
+    }
+
+
 }

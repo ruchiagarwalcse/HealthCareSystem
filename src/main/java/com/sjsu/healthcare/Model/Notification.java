@@ -9,7 +9,7 @@ public class Notification {
     private String id;
     private String patientId;
     private String circleOfCareContactId;
-
+    private boolean notificationSent;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date createdAt;
     private String message;
@@ -56,5 +56,15 @@ public class Notification {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void setNotificationSent(boolean val)
+    {
+        this.notificationSent = val;
+    }
+
+    public boolean getNotificationSent()
+    {
+        return notificationSent;
     }
 }
