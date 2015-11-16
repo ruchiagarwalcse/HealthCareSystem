@@ -82,6 +82,10 @@ public class PatientService {
             patient.setBmi(p.getBmi());
         }
 
+        if(p.getCholestrol() != 0)
+        {
+            patient.setCholestrol(p.getCholestrol());
+        }
 
         if (p.getPhoneNumber() != 0) {
             patient.setPhoneNumber(p.getPhoneNumber());

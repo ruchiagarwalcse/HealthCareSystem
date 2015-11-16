@@ -20,7 +20,7 @@ public class Patient {
     private int weight;
     private int bmi;
     private long phoneNumber;
-
+    private int cholestrol;
    // @Email	//Email format validation
     private String email;
     private String username;
@@ -137,6 +137,13 @@ public class Patient {
         this.height = height;
     }
 
+    public int getCholestrol() {
+        return this.cholestrol;
+    }
+
+    public void setCholestrol(int cholestrol) {this.cholestrol = cholestrol;}
+
+
     public void addCircleOfCarePerson(CircleOfCareContact circleOfCareContact) {this.circleOfCare.add(circleOfCareContact) ;
     }
 
@@ -158,7 +165,7 @@ public class Patient {
         CircleOfCareContact circleOfCareContact = null;
         for (CircleOfCareContact c : this.circleOfCare)
         {
-            if (c.getPriority().equals(priority)) {
+            if (c.getPriority().equalsIgnoreCase(priority)) {
                 circleOfCareContact = c;
                 break;
             }

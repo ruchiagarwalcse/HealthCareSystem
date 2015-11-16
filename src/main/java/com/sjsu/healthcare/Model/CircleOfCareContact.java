@@ -65,4 +65,5 @@ public class CircleOfCareContact {
     public void setPriority(String priority) {
         this.priority = priority;
     }
+
 }

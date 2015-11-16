@@ -13,6 +13,12 @@ public class Notification {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date createdAt;
     private String message;
+    //added enum for 3 types of notification
+//    public enum NotificationType{
+//        HEARTRATE, HEARTDISEASE, MEDICATION
+//    }
+    public String notificationType;
+    public CircleOfCareContact circleOfCareContact;
 
     public Notification() {
 
@@ -66,5 +72,13 @@ public class Notification {
     public boolean getNotificationSent()
     {
         return notificationSent;
+    }
+
+    public CircleOfCareContact getCircleOfCare() {
+        return circleOfCareContact;
+    }
+
+    public void setCircleOfCare(CircleOfCareContact circleOfCare) {
+        this.circleOfCareContact = circleOfCare;
     }
 }

@@ -1,14 +1,12 @@
 package com.sjsu.healthcare.Service;
 
 import com.sjsu.healthcare.Model.Patient;
-import com.sjsu.healthcare.Repository.MedicineRepository;
 import com.sjsu.healthcare.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import com.sjsu.healthcare.Model.Medication;
 
@@ -18,8 +16,6 @@ public class MedicationService {
 
     @Autowired
     private PatientRepository patientRepository;
-    @Autowired
-    private MedicineRepository medicineRepository;
 
     //Save new medication for a patient
     @RequestMapping(value = "api/patient/{id}/medication", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
