@@ -2,6 +2,8 @@ package com.sjsu.healthcare.Service;
 
 import com.sjsu.healthcare.Model.ActivityData;
 import com.sjsu.healthcare.Repository.ActivityDataRepository;
+import com.sjsu.healthcare.DBHandler.ActivityDataHandler;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ public class ActivityDataService {
 
     @Autowired
     private ActivityDataRepository activityDataRepository;
+
+    private ActivityDataHandler activityDataHandler = new ActivityDataHandler();
 
     //Save new data
     @RequestMapping(value = "api/activity", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -28,4 +32,18 @@ public class ActivityDataService {
         ArrayList<ActivityData> activityData = activityDataRepository.findByPatientId(patientId);
         return new ResponseEntity(activityData, HttpStatus.OK);
     }
+
+    //Get a patient's activity, x days before current date
+    @RequestMapping(value = "api/patient/{id}/activitydatarange/{days}", method = RequestMethod.GET)
+    public ResponseEntity getActivityDataTimeRange(@PathVariable("id") String patientId, @PathVariable("days") int days)
+    {
+        ArrayList<ActivityData> activityData = activityDataRepository.findByPatientId(patientId);
+        if(activityData.isEmpty())
+        {
+           return new ResponseEntity("Cannot find activity for this patient", HttpStatus.NOT_FOUND);
+        }
+        DateTime oldDate = new DateTime().minusDays(days);
+        return new ResponseEntity(activityDataHandler.getActivityListFromRange(patientId, oldDate.toDate()),HttpStatus.OK );
+    }
+
 }
