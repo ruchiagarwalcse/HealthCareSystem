@@ -7,6 +7,7 @@ import com.sjsu.healthcare.Model.Notification;
 import com.sjsu.healthcare.Model.Patient;
 import com.sjsu.healthcare.Model.PulseRateData;
 import com.sjsu.healthcare.Repository.NotificationRepository;
+import com.sjsu.healthcare.Service.EmailService;
 import org.bson.types.ObjectId;
 
 import java.net.UnknownHostException;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
 
 /**
  * Created by Sindhu Kashyap on 11/3/2015.
@@ -155,7 +157,27 @@ public class PulseRateHandler
         //set notification sent to true
         notification.setNotificationSent(true);
         notificationRepository.save(notification);
+        String emailMessage = createEmailTemplate();
+        emailMessage = emailMessage.replace("[circleOfCare]", circleOfCareContact.getName());
+        emailMessage = emailMessage.replace("[Patient]", patient.getName());
+        emailMessage = emailMessage.replace("[Time]", pulseRateData.getDate().toString());
+        emailMessage = emailMessage.replace("[Priority]", priority);
+        emailMessage = emailMessage.replace("[PulseRate]", String.valueOf(pulseRateData.getPulseRate()));
+        System.out.println(emailMessage);
+        EmailService.sendEmail(circleOfCareContact.getEmail(), emailMessage);
         return true;
+    }
+
+    private String createEmailTemplate() {
+        StringBuilder str = new StringBuilder();
+        str.append("Dear [circleOfCare],") ;
+        str.append("\n\n") ;
+        str.append("[Patient]'s pulse rate at time [Time] was [Priority] at [PulseRate] RPM. You might want to check if he/she is doing alright.");
+        str.append("\n\n") ;
+        str.append("Thanks,") ;
+        str.append("\n") ;
+        str.append("Healthcare App Team") ;
+        return str.toString();
     }
 
     public boolean sendMessage(Notification notification)
