@@ -29,7 +29,7 @@ public class MedicationService {
         medication.setId();
         patient.addMedication(medication);
         patientRepository.save(patient);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(patientId,HttpStatus.CREATED);
     }
 
     //Get all medication for a patient
@@ -48,7 +48,7 @@ public class MedicationService {
         Patient patient = patientRepository.findById(patientId);
         patient.removeMedicationById(medicationId);
         patientRepository.save(patient);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity(patientId,HttpStatus.NO_CONTENT);
     }
 
     //get medication by medication id and patient Id

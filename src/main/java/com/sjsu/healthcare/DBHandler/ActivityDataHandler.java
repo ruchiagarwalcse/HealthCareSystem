@@ -5,13 +5,14 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.sjsu.healthcare.Model.ActivityData;
+import com.sjsu.healthcare.Repository.ActivityDataRepository;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Sindhu Kashyap on 11/4/2015.
@@ -19,15 +20,20 @@ import java.util.Locale;
 public class ActivityDataHandler {
 
     DBCollection coll;
-    public List<ActivityData> getActivityListFromRange(String patientId, Date date)
+    public List<ActivityData> getActivityListFromRange(String patientId, int days)
     {
+        //get today's date in UTC timezone
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //get (today - days)'s date
+        DateTime oldDate = today.minusDays(days);
         List<ActivityData> activityDataList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         try
         {
             coll = MongoFactory.getConnection().getCollection("activityData");
             BasicDBObject query = new BasicDBObject("patientId",patientId);
-            query.append("date", new BasicDBObject("$gte", sdf.parse(sdf.format(date))));
+            query.append("date", new BasicDBObject("$gte", sdf.parse(sdf.format(oldDate.toDate()))));
             DBCursor cur = coll.find(query);
             while(cur.hasNext())
             {
@@ -57,5 +63,40 @@ public class ActivityDataHandler {
         return activityDataList;
 
 
+    }
+
+    public ActivityData getActivityForTheDay(String patientId, Date date)
+    {
+        //Since Mongodb stores date and time in UTC, convert time to UTC to query
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+
+        ActivityData activityData = null;
+        try
+        {
+            coll = MongoFactory.getConnection().getCollection("activityData");
+            BasicDBObject query = new BasicDBObject("patientId",patientId);
+            query.append("date", new BasicDBObject("$gte", today.toDate()));
+            DBObject obj = coll.findOne(query);
+            if(obj != null)
+            {
+                int stepCnt = Integer.parseInt(obj.get("stepCount").toString());
+                String startTime = obj.get("date").toString();
+                String pId = obj.get("patientId").toString();
+                String id = obj.get("_id").toString();
+                System.out.println("Start time :"+startTime);
+                activityData = new ActivityData();
+                activityData.setPatientId(pId);
+                activityData.setStepCount(stepCnt);
+                activityData.setId(id);
+                activityData.setDate(new Date(startTime));
+            }
+            // activityData = activityDataRepository.findByPatientIdAndDate(patientId, sdf.parse(sdf.format(date)));
+
+        } catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+        return activityData;
     }
 }

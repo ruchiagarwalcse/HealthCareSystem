@@ -3,14 +3,16 @@ package com.sjsu.healthcare.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class ActivityData {
 
     private String id;
     private String patientId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    //@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date date;
 
     private int stepCount;
@@ -37,6 +39,11 @@ public class ActivityData {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public void setDate() {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        this.date = cal.getTime();
     }
 
     public int getStepCount() {

@@ -23,7 +23,7 @@ public class SleepDataService {
     @RequestMapping(value = "api/sleep", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity sleepDataPost(@RequestBody SleepData sleepData) {
         sleepDataRepository.save(sleepData);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(sleepData.getPatientId(),HttpStatus.CREATED);
     }
 
     //Get all data for a patient
@@ -41,8 +41,7 @@ public class SleepDataService {
         {
             return new ResponseEntity("PatientID not valid, not found", HttpStatus.NOT_FOUND);
         }
-        DateTime oldDate = new DateTime().minusDays(days);
-        System.out.println(oldDate.toString());
-        return new ResponseEntity(handler.getSleepEfficiency(patientId, oldDate.toDate()),HttpStatus.OK );
+
+         return new ResponseEntity(handler.getSleepEfficiency(patientId, days),HttpStatus.OK );
     }
 }

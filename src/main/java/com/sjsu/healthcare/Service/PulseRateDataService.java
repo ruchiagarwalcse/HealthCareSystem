@@ -77,7 +77,7 @@ public class PulseRateDataService {
              return new ResponseEntity(noOfNotifications + " abnormal pulserate found with the patient." +
                      " CircleOfCare has been appropriately notified.", HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(patient.getId(),HttpStatus.CREATED);
     }
 
     //Get all data for a patient
@@ -97,8 +97,6 @@ public class PulseRateDataService {
         {
             return new ResponseEntity("No pulse data found for this user ", HttpStatus.NOT_FOUND);
         }
-        DateTime oldDate = new DateTime().minusDays(days);
-        System.out.println(oldDate.toString());
-        return new ResponseEntity(pulseRateHandler.getPulseRateBetween(patientID, oldDate.toDate()),HttpStatus.OK );
+        return new ResponseEntity(pulseRateHandler.getPulseRateBetween(patientID, days),HttpStatus.OK );
     }
 }

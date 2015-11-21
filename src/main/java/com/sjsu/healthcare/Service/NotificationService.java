@@ -36,7 +36,7 @@ public class NotificationService {
         //:TODO check if CoCCID exists in the patient table for that patient and then insert
         notification.setNotificationSent(false);
         notificationRepository.save(notification);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(notification,HttpStatus.CREATED);
     }
 
     //Get all notifications for a patient

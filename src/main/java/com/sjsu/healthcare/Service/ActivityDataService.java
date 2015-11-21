@@ -4,12 +4,15 @@ import com.sjsu.healthcare.Model.ActivityData;
 import com.sjsu.healthcare.Repository.ActivityDataRepository;
 import com.sjsu.healthcare.DBHandler.ActivityDataHandler;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 @RestController
 public class ActivityDataService {
@@ -22,8 +25,11 @@ public class ActivityDataService {
     //Save new data
     @RequestMapping(value = "api/activity", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity activityDataPost(@RequestBody ActivityData activityData) {
+
+        System.out.println(new Date());
+        activityData.setDate();
         activityDataRepository.save(activityData);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(activityData.getPatientId(),HttpStatus.CREATED);
     }
 
     //Get all data for a patient
@@ -42,8 +48,7 @@ public class ActivityDataService {
         {
            return new ResponseEntity("Cannot find activity for this patient", HttpStatus.NOT_FOUND);
         }
-        DateTime oldDate = new DateTime().minusDays(days);
-        return new ResponseEntity(activityDataHandler.getActivityListFromRange(patientId, oldDate.toDate()),HttpStatus.OK );
+        return new ResponseEntity(activityDataHandler.getActivityListFromRange(patientId, days),HttpStatus.OK );
     }
 
 }

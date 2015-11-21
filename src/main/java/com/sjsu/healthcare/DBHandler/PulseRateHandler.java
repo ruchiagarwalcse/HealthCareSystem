@@ -9,6 +9,8 @@ import com.sjsu.healthcare.Model.PulseRateData;
 import com.sjsu.healthcare.Repository.NotificationRepository;
 import com.sjsu.healthcare.Service.EmailService;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -25,16 +27,21 @@ public class PulseRateHandler
     DBCollection coll;
     SmsSender smsSender;
 
-    public ArrayList<Integer> getPulseRateBetween(  String patient, Date from)
+    public ArrayList<Integer> getPulseRateBetween(String patient, int days)
     {
         ArrayList<Integer> pulseRateList = new ArrayList<Integer>();
+        //get today's date in UTC timezone
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //get (today - days)'s date
+        DateTime oldDate = today.minusDays(days);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         try
         {
             coll = MongoFactory.getConnection().getCollection("pulseRateData");
             BasicDBObject query = new BasicDBObject("patientId",patient);
-            System.out.println("in Handler : "+sdf.parse(sdf.format(from)));
-            query.append("date", new BasicDBObject("$gte", sdf.parse(sdf.format(from))));
+            System.out.println("in Handler : "+sdf.parse(sdf.format(oldDate.toDate())));
+            query.append("date", new BasicDBObject("$gte", sdf.parse(sdf.format(oldDate.toDate()))));
             DBCursor cur = coll.find(query);
             while(cur.hasNext())
             {
@@ -134,7 +141,7 @@ public class PulseRateHandler
             return false;
         //build the notification object
         Notification notification = new Notification();
-        notification.setCircleOfCare(circleOfCareContact);
+        notification.setCircleOfCareContact(circleOfCareContact);
         notification.setMessage(message);
         notification.setId(new ObjectId().toString());
         notification.setNotificationSent(false);
@@ -183,7 +190,7 @@ public class PulseRateHandler
     public boolean sendMessage(Notification notification)
     {
         smsSender = new SmsSender();
-       return smsSender.sendMessage(notification.getCircleOfCare().getPhoneNumber(), notification.getMessage(),
-                notification.getCircleOfCare().getName());
+       return smsSender.sendMessage(notification.getCircleOfCareContact().getPhoneNumber(), notification.getMessage(),
+                notification.getCircleOfCareContact().getName());
     }
 }

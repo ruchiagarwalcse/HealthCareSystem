@@ -3,6 +3,7 @@ package com.sjsu.healthcare.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class Notification {
 
@@ -13,12 +14,19 @@ public class Notification {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date createdAt;
     private String message;
+
+
     //added enum for 3 types of notification
 //    public enum NotificationType{
-//        HEARTRATE, HEARTDISEASE, MEDICATION
+//        HEARTRATE, HEARTDISEASE
 //    }
     public String notificationType;
+
+
+
     public CircleOfCareContact circleOfCareContact;
+    public List<CircleOfCareContact> circleOfCare;
+
 
     public Notification() {
 
@@ -74,11 +82,37 @@ public class Notification {
         return notificationSent;
     }
 
-    public CircleOfCareContact getCircleOfCare() {
+
+    public String getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
+    }
+
+    public List<CircleOfCareContact> getCircleOfCare() {
+        return circleOfCare;
+    }
+
+    public void setCircleOfCare(List<CircleOfCareContact> circleOfCare) {
+        this.circleOfCare = circleOfCare;
+    }
+
+    public CircleOfCareContact getCircleOfCareContact() {
+
         return circleOfCareContact;
     }
 
-    public void setCircleOfCare(CircleOfCareContact circleOfCare) {
-        this.circleOfCareContact = circleOfCare;
+    public void setCircleOfCareContact(CircleOfCareContact circleOfCareContact) {
+        this.circleOfCareContact = circleOfCareContact;
     }
+
+
+    public void addCircleOfCarePerson(CircleOfCareContact circleOfCareContact)
+    {
+        this.circleOfCare.add(circleOfCareContact) ;
+    }
+
+
 }
