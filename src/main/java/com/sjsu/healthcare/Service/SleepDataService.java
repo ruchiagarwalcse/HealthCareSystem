@@ -41,8 +41,7 @@ public class SleepDataService {
         {
             return new ResponseEntity("PatientID not valid, not found", HttpStatus.NOT_FOUND);
         }
-        DateTime oldDate = new DateTime().minusDays(days);
-        System.out.println(oldDate.toString());
-        return new ResponseEntity(handler.getSleepEfficiency(patientId, oldDate.toDate()),HttpStatus.OK );
+
+         return new ResponseEntity(handler.getSleepEfficiency(patientId, days),HttpStatus.OK );
     }
 }

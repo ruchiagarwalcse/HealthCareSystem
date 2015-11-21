@@ -17,6 +17,7 @@ public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+
     //Homepage check
     @RequestMapping(value = "api/homepage", method = RequestMethod.GET)
     public String getHomePage() {
@@ -76,6 +77,11 @@ public class PatientService {
         }
         if (p.getWeight() != 0) {
             patient.setWeight(p.getWeight());
+        }
+
+        if(!p.getDateOfBirth().equals("") && !p.getDateOfBirth().equals(null))
+        {
+            patient.setDateOfBirth(p.getDateOfBirth());
         }
 
         if (p.getBmi() != 0) {

@@ -5,6 +5,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.sjsu.healthcare.Model.SleepData;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -18,15 +20,20 @@ import java.util.Locale;
 public class SleepDataHandler
 {
     DBCollection coll;
-    public ArrayList<SleepData> getSleepEfficiency(String patientId, Date date)
+    public ArrayList<SleepData> getSleepEfficiency(String patientId, int days)
     {
         ArrayList<SleepData> sleepDataList = new ArrayList<>();
+        //get today's date in UTC timezone
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //get (today - days)'s date
+        DateTime oldDate = today.minusDays(days);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         try
         {
             coll = MongoFactory.getConnection().getCollection("sleepData");
             BasicDBObject query = new BasicDBObject("patientId",patientId);
-            query.append("startTime", new BasicDBObject("$gte", sdf.parse(sdf.format(date))));
+            query.append("startTime", new BasicDBObject("$gte", sdf.parse(sdf.format(oldDate.toDate()))));
             DBCursor cur = coll.find(query);
             while(cur.hasNext())
             {

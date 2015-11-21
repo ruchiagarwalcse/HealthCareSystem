@@ -97,8 +97,6 @@ public class PulseRateDataService {
         {
             return new ResponseEntity("No pulse data found for this user ", HttpStatus.NOT_FOUND);
         }
-        DateTime oldDate = new DateTime().minusDays(days);
-        System.out.println(oldDate.toString());
-        return new ResponseEntity(pulseRateHandler.getPulseRateBetween(patientID, oldDate.toDate()),HttpStatus.OK );
+        return new ResponseEntity(pulseRateHandler.getPulseRateBetween(patientID, days),HttpStatus.OK );
     }
 }

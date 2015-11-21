@@ -1,13 +1,14 @@
 package com.sjsu.healthcare.Service;
 
+import com.sjsu.healthcare.DBHandler.DecisionTreeHandler;
 import com.sjsu.healthcare.DecisionTree.BadDecisionException;
 import com.sjsu.healthcare.DecisionTree.DecisionTree;
 import com.sjsu.healthcare.DecisionTree.UnknownDecisionException;
-import com.sjsu.healthcare.Model.ModelData;
-import com.sjsu.healthcare.Model.ModelTestData;
-import com.sjsu.healthcare.Repository.ModelDataRepository;
-import com.sjsu.healthcare.Repository.ModelTestDataRepository;
+import com.sjsu.healthcare.Model.*;
+import com.sjsu.healthcare.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import static org.junit.Assert.*;
 import java.util.*;
@@ -20,6 +21,12 @@ public class DecisionTreeService {
 
     @Autowired
     private ModelTestDataRepository modelTestDataRepository;
+
+    @Autowired private PatientRepository patientRepository;
+    @Autowired private PulseRateDataRepository pulseRateDataRepository;
+    @Autowired private ActivityDataRepository activityDataRepository;
+    @Autowired private NotificationRepository notificationRepository;
+
 
     private DecisionTree createTree() {
         try {
@@ -70,22 +77,23 @@ public class DecisionTreeService {
                 }
             }
         }
-
         String str =  "Right Decision Count: " + right;
         str = str + " & Wrong Decision Count: " + wrong;
         return str;
     }
 
-    public Boolean getDecision(int age, int cholestrol, int maxPulseRate, int restingPulseRate, int bmi, int stepCount) throws BadDecisionException{
+    public Boolean getDecision(HeartDiseaseData heartDiseaseData
+            )
+            throws BadDecisionException{
         Boolean decision;
         DecisionTree tree = createTree();
         Map<String, String> testCase = new HashMap<String, String>();
-        testCase.put("age", String.valueOf(age));
-        testCase.put("cholestrol", String.valueOf(cholestrol));
-        testCase.put("maxPulseRate", String.valueOf(maxPulseRate));
-        testCase.put("restingPulseRate", String.valueOf(restingPulseRate));
-        testCase.put("bmi", String.valueOf(bmi));
-        testCase.put("stepCount", String.valueOf(stepCount));
+        testCase.put("age", String.valueOf(heartDiseaseData.getAge()));
+        testCase.put("cholestrol", String.valueOf(heartDiseaseData.getCholestrol()));
+        testCase.put("maxPulseRate", String.valueOf(heartDiseaseData.getMaxPulseRate()));
+        testCase.put("restingPulseRate", String.valueOf(heartDiseaseData.getRestingPulseRate()));
+        testCase.put("bmi", String.valueOf(heartDiseaseData.getBmi()));
+        testCase.put("stepCount", String.valueOf(heartDiseaseData.getStepCount()));
         decision = tree.apply(testCase);
         return decision;
     }
@@ -108,6 +116,39 @@ public class DecisionTreeService {
             e.printStackTrace();
            return "Error";
         }
+    }
+
+    //needs age, cholestrol, bmi, maxpulserate, restingpulserate, bmi, stepcount
+    @RequestMapping(value = "api/heartcondition/decision/{pid}", method = RequestMethod.GET)
+    public ResponseEntity getDecisionForPatient(@PathVariable("pid") String patientId)
+    {
+        Patient patient = patientRepository.findById(patientId);
+        if(patient == null)
+        {
+            return new ResponseEntity("No Patient found for the given Patient ID", HttpStatus.NOT_FOUND);
+        }
+        DecisionTreeHandler handler = new DecisionTreeHandler();
+        //get all patient data required for determining heart disease
+        HeartDiseaseData heartDiseaseData = handler.
+                getPatientDataForDecisionTree(patient);
+        //call getDecision which gets the decision for the patient
+        boolean decision = false;
+        try {
+             decision = getDecision(heartDiseaseData);
+            heartDiseaseData.setDecision(decision);
+        } catch (BadDecisionException e) {
+            e.printStackTrace();
+        }
+        if(decision)
+        {
+            System.out.println("Patient has heart disease , going to send notification...");
+            boolean sent =
+                    handler.sendHeartDiseaseDecisionNotification(heartDiseaseData, patient, notificationRepository);
+            if(sent)
+                heartDiseaseData.setCircleOfCareNotified(true);
+        }
+
+        return new ResponseEntity(heartDiseaseData, HttpStatus.OK);
     }
 
 }
