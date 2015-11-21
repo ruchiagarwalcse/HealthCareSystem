@@ -23,7 +23,7 @@ public class SleepDataService {
     @RequestMapping(value = "api/sleep", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity sleepDataPost(@RequestBody SleepData sleepData) {
         sleepDataRepository.save(sleepData);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(sleepData.getPatientId(),HttpStatus.CREATED);
     }
 
     //Get all data for a patient

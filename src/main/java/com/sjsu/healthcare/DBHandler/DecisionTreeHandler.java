@@ -116,18 +116,20 @@ public class DecisionTreeHandler {
         List<CircleOfCareContact> circleOfCareContactList = patient.getCircleOfCare();
         Notification notification = new Notification();
         notification.setPatientId(patient.getId());
-        for(CircleOfCareContact c : circleOfCareContactList)
-        {
-            notification.addCircleOfCarePerson(c);
-        }
+        notification.setCircleOfCare(circleOfCareContactList);
+        //for(CircleOfCareContact c : circleOfCareContactList)
+//        for(int i =0;i<circleOfCareContactList.size();i++)
+//        {
+//            notification.addCircleOfCarePerson(circleOfCareContactList.get(i));
+//            //notification.addCircleOfCarePerson(c);
+//        }
         notification.setCreatedAt();
         notification.setId(new ObjectId().toString());
-        notification.setMessage(patient.getName() + " might be prone to have a heart disease ");
+        notification.setMessage(patient.getName() + " might be prone to heart disease ");
         notification.setNotificationType("HEARTDISEASE");
         boolean s = false;
         for(CircleOfCareContact c : circleOfCareContactList)
         {
-            notification.addCircleOfCarePerson(c);
             SmsSender smsSender = new SmsSender();
             s = smsSender.sendMessage(c.getPhoneNumber(), notification.getMessage(),
                     c.getName());

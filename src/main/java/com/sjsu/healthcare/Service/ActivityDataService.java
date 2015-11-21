@@ -29,7 +29,7 @@ public class ActivityDataService {
         System.out.println(new Date());
         activityData.setDate();
         activityDataRepository.save(activityData);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(activityData.getPatientId(),HttpStatus.CREATED);
     }
 
     //Get all data for a patient

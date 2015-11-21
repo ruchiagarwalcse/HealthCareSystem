@@ -77,7 +77,7 @@ public class PulseRateDataService {
              return new ResponseEntity(noOfNotifications + " abnormal pulserate found with the patient." +
                      " CircleOfCare has been appropriately notified.", HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(patient.getId(),HttpStatus.CREATED);
     }
 
     //Get all data for a patient

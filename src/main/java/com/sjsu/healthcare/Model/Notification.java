@@ -21,6 +21,9 @@ public class Notification {
 //        HEARTRATE, HEARTDISEASE
 //    }
     public String notificationType;
+
+
+
     public CircleOfCareContact circleOfCareContact;
     public List<CircleOfCareContact> circleOfCare;
 
@@ -79,13 +82,6 @@ public class Notification {
         return notificationSent;
     }
 
-    public CircleOfCareContact getCircleOfCare() {
-        return circleOfCareContact;
-    }
-
-    public void setCircleOfCare(CircleOfCareContact circleOfCare) {
-        this.circleOfCareContact = circleOfCare;
-    }
 
     public String getNotificationType() {
         return notificationType;
@@ -95,13 +91,23 @@ public class Notification {
         this.notificationType = notificationType;
     }
 
-    public List<CircleOfCareContact> getCircleOfCareContactList() {
+    public List<CircleOfCareContact> getCircleOfCare() {
         return circleOfCare;
     }
 
-    public void setCircleOfCareContactList(List<CircleOfCareContact> circleOfCareContactList) {
-        this.circleOfCare = circleOfCareContactList;
+    public void setCircleOfCare(List<CircleOfCareContact> circleOfCare) {
+        this.circleOfCare = circleOfCare;
     }
+
+    public CircleOfCareContact getCircleOfCareContact() {
+
+        return circleOfCareContact;
+    }
+
+    public void setCircleOfCareContact(CircleOfCareContact circleOfCareContact) {
+        this.circleOfCareContact = circleOfCareContact;
+    }
+
 
     public void addCircleOfCarePerson(CircleOfCareContact circleOfCareContact)
     {

@@ -141,7 +141,7 @@ public class PulseRateHandler
             return false;
         //build the notification object
         Notification notification = new Notification();
-        notification.setCircleOfCare(circleOfCareContact);
+        notification.setCircleOfCareContact(circleOfCareContact);
         notification.setMessage(message);
         notification.setId(new ObjectId().toString());
         notification.setNotificationSent(false);
@@ -190,7 +190,7 @@ public class PulseRateHandler
     public boolean sendMessage(Notification notification)
     {
         smsSender = new SmsSender();
-       return smsSender.sendMessage(notification.getCircleOfCare().getPhoneNumber(), notification.getMessage(),
-                notification.getCircleOfCare().getName());
+       return smsSender.sendMessage(notification.getCircleOfCareContact().getPhoneNumber(), notification.getMessage(),
+                notification.getCircleOfCareContact().getName());
     }
 }
