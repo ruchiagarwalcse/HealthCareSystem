@@ -27,9 +27,9 @@ public class PatientService {
     //Save Patient
     @RequestMapping(value = "api/patients", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity patientPost(@RequestBody Patient p) {
-        patientRepository.save(p);
+        p = patientRepository.save(p);
         //:TODO: Validate the details here, email format should be proper
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(p.getId(), HttpStatus.CREATED);
     }
 
     //Login patient with username and password

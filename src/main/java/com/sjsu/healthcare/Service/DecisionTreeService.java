@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.annotation.PostConstruct;
 import static org.junit.Assert.*;
 import java.util.*;
 
@@ -23,28 +24,28 @@ public class DecisionTreeService {
     private ModelTestDataRepository modelTestDataRepository;
 
     @Autowired private PatientRepository patientRepository;
-    @Autowired private PulseRateDataRepository pulseRateDataRepository;
-    @Autowired private ActivityDataRepository activityDataRepository;
     @Autowired private NotificationRepository notificationRepository;
+    private DecisionTree tree;
 
-
-    private DecisionTree createTree() {
-        try {
+    @PostConstruct
+    private void createTree()
+    {
+        try
+        {
             DecisionTree decisionTree = new DecisionTree();
             decisionTree.setAttributes(new String[]{"age", "cholestrol", "maxPulseRate", "restingPulseRate, bmi, stepCount"});
             List<ModelData> data = modelDataRepository.findAll();
             for(ModelData d: data) {
                 decisionTree.addExample(new String[]{String.valueOf(d.getAge()), String.valueOf(d.getCholestrol()), String.valueOf(d.getMaxPulseRate()), String.valueOf(d.getRestingPulseRate()), String.valueOf(d.getBmi()), String.valueOf(d.getStepCount())}, d.isResult());
             }
-            return decisionTree;
+            tree = decisionTree;
         } catch (UnknownDecisionException e) {
             fail();
-            return new DecisionTree();
+            tree = new DecisionTree();
         }
     }
 
     public String testTree() throws BadDecisionException{
-        DecisionTree tree = createTree();
         List<ModelTestData> data = modelTestDataRepository.findAll();
         int right = 0, wrong = 0;
         for(ModelTestData d: data) {
@@ -86,7 +87,6 @@ public class DecisionTreeService {
             )
             throws BadDecisionException{
         Boolean decision;
-        DecisionTree tree = createTree();
         Map<String, String> testCase = new HashMap<String, String>();
         testCase.put("age", String.valueOf(heartDiseaseData.getAge()));
         testCase.put("cholestrol", String.valueOf(heartDiseaseData.getCholestrol()));
@@ -98,7 +98,7 @@ public class DecisionTreeService {
         return decision;
     }
 
-    @RequestMapping(value = "api/createTree", method = RequestMethod.GET)
+    /*@RequestMapping(value = "api/createTree", method = RequestMethod.GET)
     public DecisionTree create() {
         try {
             DecisionTree decisionTree = createTree();
@@ -106,7 +106,7 @@ public class DecisionTreeService {
         }catch (Exception e) {
             return new DecisionTree();
         }
-    }
+    }*/
 
     @RequestMapping(value = "api/testTree", method = RequestMethod.GET)
     public String test() {

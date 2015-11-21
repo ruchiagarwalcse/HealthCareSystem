@@ -17,7 +17,7 @@ public class Medication {
     private Date time;
 
     public Medication() {
-
+	this.id = new ObjectId().toString();
     }
 
 //    public UUID getId() {

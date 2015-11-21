@@ -8,7 +8,7 @@ public class CircleOfCareContact {
       Low: Family Member*/
 
     public CircleOfCareContact() {
-
+	this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
