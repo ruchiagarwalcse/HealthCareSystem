@@ -28,6 +28,19 @@ public class Patient {
     private String fitbitUsername;
     private ArrayList<CircleOfCareContact> circleOfCare = new ArrayList<CircleOfCareContact>();
     private ArrayList<Medication> medicineSchedule = new ArrayList<Medication>();
+    private boolean hasHeartDisease;
+
+    public boolean isHasHeartDisease() {
+        return hasHeartDisease;
+    }
+
+    public void setHasHeartDisease(boolean hasHeartDisease) {
+        this.hasHeartDisease = hasHeartDisease;
+    }
+
+    public boolean getHasHeartDisease() {
+        return hasHeartDisease;
+    }
 
     public Patient(){
 

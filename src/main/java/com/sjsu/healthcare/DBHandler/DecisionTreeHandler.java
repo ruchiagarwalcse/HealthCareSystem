@@ -32,12 +32,13 @@ public class DecisionTreeHandler {
         Date patientDOB = patient.getDateOfBirth();
         Calendar cal = Calendar.getInstance();
         cal.setTime(patientDOB);
-        LocalDate dob = new LocalDate(cal.get(Calendar.YEAR),  cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH));
+        LocalDate dob = new LocalDate(cal.get(Calendar.YEAR),  cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         LocalDate date = new LocalDate();
         Period period = new Period(dob, date, PeriodType.yearMonthDay());
         int age = period.getYears();
         heartDiseaseData.setAge(age);
         //get step count for the day for the patient
+        System.out.println(patient.getId());
         int stepCnt = new ActivityDataHandler().getActivityForTheDay(patient.getId(), new Date()).getStepCount();
         heartDiseaseData.setStepCount(stepCnt);//sets the step count
         //get maxpulserate and resting pulserate for that day from the database

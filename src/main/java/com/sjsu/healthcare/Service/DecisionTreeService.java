@@ -9,6 +9,7 @@ import com.sjsu.healthcare.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import static org.junit.Assert.*;
@@ -83,6 +84,39 @@ public class DecisionTreeService {
         return str;
     }
 
+
+
+    //@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
+    @Scheduled(cron="0 58 23 * * ?")
+    public void decisionService(){
+        List<Patient> patients = patientRepository.findAll();
+        for(Patient p: patients){
+            if(!p.getHasHeartDisease()){
+               try {
+                        decide(p);
+                    }   catch (Exception e) {
+                        System.out.println("Error occurred but continue for other patients...");
+                    }
+            }
+        }
+    }
+
+    /*@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
+    public List<HeartDiseaseData> decisionService(){
+        List<Patient> patients = patientRepository.findAll();
+        List<HeartDiseaseData> h  = new ArrayList<HeartDiseaseData>();
+            for(Patient p: patients){
+                if(!p.getHasHeartDisease()){
+                    try {
+                        h.add(decide(p));
+                    }   catch (Exception e) {
+                        System.out.println("Error occurred but continue for other patients...");
+                    }
+                }
+            }
+        return h;
+    }*/
+
     public Boolean getDecision(HeartDiseaseData heartDiseaseData
             )
             throws BadDecisionException{
@@ -127,6 +161,15 @@ public class DecisionTreeService {
         {
             return new ResponseEntity("No Patient found for the given Patient ID", HttpStatus.NOT_FOUND);
         }
+        HeartDiseaseData heartDiseaseData = decide(patient);
+        return new ResponseEntity(heartDiseaseData, HttpStatus.OK);
+    }
+    /*@Scheduled(cron="0 58 23 * * ?")
+    public void testScheduler(){
+        System.out.println("Hello:" + new Date());
+    }*/
+
+    public HeartDiseaseData decide(Patient patient) {
         DecisionTreeHandler handler = new DecisionTreeHandler();
         //get all patient data required for determining heart disease
         HeartDiseaseData heartDiseaseData = handler.
@@ -134,8 +177,10 @@ public class DecisionTreeService {
         //call getDecision which gets the decision for the patient
         boolean decision = false;
         try {
-             decision = getDecision(heartDiseaseData);
+            decision = getDecision(heartDiseaseData);
             heartDiseaseData.setDecision(decision);
+            patient.setHasHeartDisease(decision);
+            patientRepository.save(patient);
         } catch (BadDecisionException e) {
             e.printStackTrace();
         }
@@ -146,9 +191,61 @@ public class DecisionTreeService {
                     handler.sendHeartDiseaseDecisionNotification(heartDiseaseData, patient, notificationRepository);
             if(sent)
                 heartDiseaseData.setCircleOfCareNotified(true);
+            for (CircleOfCareContact circleOfCareContact: patient.getCircleOfCare()) {
+                String emailMessage = createMessage(heartDiseaseData, patient, false);
+                emailMessage = emailMessage.replace("[circleOfCare]", circleOfCareContact.getName());
+                EmailService.sendEmail(circleOfCareContact.getEmail(), emailMessage);
+            }
+            String emailMessage = createMessage(heartDiseaseData, patient, true);
+            EmailService.sendEmail(patient.getEmail(), emailMessage);
         }
-
-        return new ResponseEntity(heartDiseaseData, HttpStatus.OK);
+        return  heartDiseaseData;
     }
 
+    private String createMessage(HeartDiseaseData heartDiseaseData, Patient patient, boolean forPatient) {
+        StringBuilder str = new StringBuilder();
+        if (forPatient) {
+            str.append("Dear [patient],") ;
+            str.append("\n\n") ;
+            str.append("We have predicted from our system that you might be prone to heart problems based on the following health parameters.");
+        } else {
+            str.append("Dear [circleOfCare],") ;
+            str.append("\n\n") ;
+            str.append("We have predicted from our system that [patient]'s might be prone to heart problems based on the following health parameters.");
+        }
+        str.append("\n\n") ;
+        str.append("Cholestrol : [cholestrol]");
+        str.append("\n") ;
+        str.append("Age : [age]");
+        str.append("\n") ;
+        str.append("BMI : [bmi]");
+        str.append("\n") ;
+        str.append("Maximum pulse rate for today : [maxPulseRate]");
+        str.append("\n") ;
+        str.append("Resting pulse rate for today : [restingPulseRate]");
+        str.append("\n") ;
+        str.append("Step count for today : [stepCount]");
+        str.append("\n\n") ;
+        if (forPatient) {
+            str.append("You might want to make sure if everything alright.");
+        } else {
+            str.append("You might want to make sure if he/she is doing alright.");
+        }
+
+        str.append("\n\n") ;
+        str.append("Thanks,") ;
+        str.append("\n") ;
+        str.append("Healthcare App Team") ;
+
+        String emailMessage = str.toString();
+        emailMessage = emailMessage.replace("[patient]", patient.getName());
+        emailMessage = emailMessage.replace("[cholestrol]", String.valueOf((heartDiseaseData.getCholestrol())));
+        emailMessage = emailMessage.replace("[age]", String.valueOf((heartDiseaseData.getAge())));
+        emailMessage = emailMessage.replace("[bmi]", String.valueOf((heartDiseaseData.getBmi())));
+        emailMessage = emailMessage.replace("[maxPulseRate]", String.valueOf((heartDiseaseData.getMaxPulseRate())));
+        emailMessage = emailMessage.replace("[restingPulseRate]", String.valueOf((heartDiseaseData.getRestingPulseRate())));
+        emailMessage = emailMessage.replace("[stepCount]", String.valueOf((heartDiseaseData.getStepCount())));
+        System.out.println(emailMessage);
+        return emailMessage;
+    }
 }
