@@ -70,7 +70,6 @@ public class ActivityDataHandler {
         //Since Mongodb stores date and time in UTC, convert time to UTC to query
         DateTimeZone timeZone = DateTimeZone.forID("UTC");
         DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
-
         ActivityData activityData = null;
         try
         {

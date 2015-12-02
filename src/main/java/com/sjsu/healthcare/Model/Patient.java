@@ -21,8 +21,6 @@ public class Patient {
     private int bmi;
     private long phoneNumber;
     private int cholestrol;
-    private boolean hasHeartDisease;
-
 
     // @Email	//Email format validation
     private String email;
@@ -31,6 +29,19 @@ public class Patient {
     private String fitbitUsername;
     private ArrayList<CircleOfCareContact> circleOfCare = new ArrayList<CircleOfCareContact>();
     private ArrayList<Medication> medicineSchedule = new ArrayList<Medication>();
+    private boolean hasHeartDisease;
+
+    public boolean isHasHeartDisease() {
+        return hasHeartDisease;
+    }
+
+    public void setHasHeartDisease(boolean hasHeartDisease) {
+        this.hasHeartDisease = hasHeartDisease;
+    }
+
+    public boolean getHasHeartDisease() {
+        return hasHeartDisease;
+    }
 
     public Patient(){
 
@@ -146,13 +157,6 @@ public class Patient {
 
     public void setCholestrol(int cholestrol) {this.cholestrol = cholestrol;}
 
-    public boolean isHasHeartDisease() {
-        return hasHeartDisease;
-    }
-
-    public void setHasHeartDisease(boolean hasHeartDisease) {
-        this.hasHeartDisease = hasHeartDisease;
-    }
 
     public void addCircleOfCarePerson(CircleOfCareContact circleOfCareContact) {this.circleOfCare.add(circleOfCareContact) ;
     }

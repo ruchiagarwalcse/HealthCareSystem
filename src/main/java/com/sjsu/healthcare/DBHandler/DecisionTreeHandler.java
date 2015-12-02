@@ -38,6 +38,7 @@ public class DecisionTreeHandler {
         int age = period.getYears();
         heartDiseaseData.setAge(age);
         //get step count for the day for the patient
+        System.out.println(patient.getId());
         int stepCnt = new ActivityDataHandler().getActivityForTheDay(patient.getId(), new Date()).getStepCount();
         heartDiseaseData.setStepCount(stepCnt);//sets the step count
         //get maxpulserate and resting pulserate for that day from the database
