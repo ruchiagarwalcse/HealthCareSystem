@@ -21,7 +21,8 @@ public class Patient {
     private int bmi;
     private long phoneNumber;
     private int cholestrol;
-   // @Email	//Email format validation
+
+    // @Email	//Email format validation
     private String email;
     private String username;
     private String password;

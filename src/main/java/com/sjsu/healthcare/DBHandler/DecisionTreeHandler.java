@@ -108,6 +108,8 @@ public class DecisionTreeHandler {
 
         pulseRateValues[0] = maxPulserate;
         pulseRateValues[1] = maxOccuringKey;
+        System.out.print("maxPulserate :"+ maxPulserate);
+        System.out.print("maxOccuring :"+ maxOccuringKey);
         return pulseRateValues;
     }
 
