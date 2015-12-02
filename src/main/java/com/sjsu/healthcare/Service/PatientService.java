@@ -52,6 +52,26 @@ public class PatientService {
         else
             return new ResponseEntity("Invalid password", HttpStatus.NOT_FOUND);
     }
+
+    @RequestMapping(value = "api/v2/patient/login", method = RequestMethod.POST)
+    private ResponseEntity loginPatientApp(@RequestBody Patient p)
+    {
+        Patient patient = null;
+        if(!Strings.isNullOrEmpty(p.getUsername()) && !Strings.isNullOrEmpty(p.getPassword()))
+        {
+            patient = patientRepository.findByUsername(p.getUsername());
+        }
+        if(patient == null)
+        {
+            return new ResponseEntity("Invalid username", HttpStatus.NOT_FOUND);
+        }
+        if(patient.getPassword().equals(p.getPassword()))
+        {
+            return new ResponseEntity(patient, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity("Invalid password", HttpStatus.NOT_FOUND);
+    }
     //View Patient
     @RequestMapping(value = "api/patients/{id}", method = RequestMethod.GET)
     public ResponseEntity patientGet(@PathVariable("id") String id) {

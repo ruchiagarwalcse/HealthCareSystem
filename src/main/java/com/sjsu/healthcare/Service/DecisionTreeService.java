@@ -6,6 +6,7 @@ import com.sjsu.healthcare.DecisionTree.DecisionTree;
 import com.sjsu.healthcare.DecisionTree.UnknownDecisionException;
 import com.sjsu.healthcare.Model.*;
 import com.sjsu.healthcare.Repository.*;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class DecisionTreeService {
 
     @Autowired
     private ModelDataRepository modelDataRepository;
+
 
     @Autowired
     private ModelTestDataRepository modelTestDataRepository;
@@ -83,8 +85,7 @@ public class DecisionTreeService {
         return str;
     }
 
-    public Boolean getDecision(HeartDiseaseData heartDiseaseData
-            )
+    public Boolean getDecision(HeartDiseaseData heartDiseaseData)
             throws BadDecisionException{
         Boolean decision;
         Map<String, String> testCase = new HashMap<String, String>();
@@ -151,4 +152,53 @@ public class DecisionTreeService {
         return new ResponseEntity(heartDiseaseData, HttpStatus.OK);
     }
 
+    //
+    @RequestMapping(value = "api/heartcondition/{pid}/feedbackloop", method = RequestMethod.GET)
+    public ResponseEntity getFeedBackLoopDecision(@PathVariable("pid") String patientId)
+    {
+        Patient patient = patientRepository.findById(patientId);
+        if(patient == null)
+        {
+            return new ResponseEntity("No Patient found for the given Patient ID", HttpStatus.NOT_FOUND);
+        }
+        patient.setHasHeartDisease(false);
+        DecisionTreeHandler handler = new DecisionTreeHandler();
+        //get all patient data required for determining heart disease
+        HeartDiseaseData heartDiseaseData = handler.
+                getPatientDataForDecisionTree(patient);
+        //insert the heart disease data into Model Data
+        ModelData data =insertPatientDataIntoModelData(heartDiseaseData);
+        if(data == null)
+        {
+            new ResponseEntity("Error inserting patient heart data into Model Data", HttpStatus.EXPECTATION_FAILED);
+        }
+        //rebuild the tree with the new insertion in model data
+        createTree();
+
+        //call getDecision which gets the decision for the patient
+        boolean decision = false;
+        try {
+            decision = getDecision(heartDiseaseData);
+            heartDiseaseData.setDecision(decision);
+        } catch (BadDecisionException e) {
+            e.printStackTrace();
+        }
+        if(decision)
+        {
+            System.out.println("Patient has heart disease , going to send notification...");
+            return new ResponseEntity("Oops! Looks like you still have a heart problem!", HttpStatus.OK);
+        }
+        return new ResponseEntity("Sorry, looks like our previous decision was wrong. Hurray, you do" +
+                " not have any heart disease!", HttpStatus.OK);
+    }
+
+    private ModelData insertPatientDataIntoModelData(HeartDiseaseData heartDiseaseData) {
+
+        int result = 0;
+        ModelData md = new ModelData(new ObjectId().toString(),heartDiseaseData.getAge(), heartDiseaseData.getCholestrol(),
+                heartDiseaseData.getMaxPulseRate(), heartDiseaseData.getRestingPulseRate(), heartDiseaseData.getBmi(),
+                heartDiseaseData.getStepCount(), result);
+
+        return modelDataRepository.save(md);
+    }
 }

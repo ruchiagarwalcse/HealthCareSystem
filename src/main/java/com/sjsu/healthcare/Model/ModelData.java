@@ -10,6 +10,25 @@ public class ModelData {
     private int stepCount;
     private int result;
 
+    public ModelData()
+    {
+
+    }
+
+    public ModelData(String id, int age, int cholestrol, int maxPulseRate, int restingPulseRate, int bmi,
+                     int stepCount, int result)
+    {
+        this.id = id;
+        this.age = age;
+        this.cholestrol = cholestrol;
+        this.maxPulseRate = maxPulseRate;
+        this.restingPulseRate
+                 = restingPulseRate;
+        this.bmi = bmi;
+        this.stepCount = stepCount;
+        this.result = result;
+    }
+
     public int getResult() {
         return result;
     }

@@ -32,7 +32,7 @@ public class DecisionTreeHandler {
         Date patientDOB = patient.getDateOfBirth();
         Calendar cal = Calendar.getInstance();
         cal.setTime(patientDOB);
-        LocalDate dob = new LocalDate(cal.get(Calendar.YEAR),  cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH));
+        LocalDate dob = new LocalDate(cal.get(Calendar.YEAR),  cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         LocalDate date = new LocalDate();
         Period period = new Period(dob, date, PeriodType.yearMonthDay());
         int age = period.getYears();
@@ -107,6 +107,8 @@ public class DecisionTreeHandler {
 
         pulseRateValues[0] = maxPulserate;
         pulseRateValues[1] = maxOccuringKey;
+        System.out.print("maxPulserate :"+ maxPulserate);
+        System.out.print("maxOccuring :"+ maxOccuringKey);
         return pulseRateValues;
     }
 

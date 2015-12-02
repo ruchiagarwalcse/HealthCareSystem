@@ -21,7 +21,10 @@ public class Patient {
     private int bmi;
     private long phoneNumber;
     private int cholestrol;
-   // @Email	//Email format validation
+    private boolean hasHeartDisease;
+
+
+    // @Email	//Email format validation
     private String email;
     private String username;
     private String password;
@@ -143,6 +146,13 @@ public class Patient {
 
     public void setCholestrol(int cholestrol) {this.cholestrol = cholestrol;}
 
+    public boolean isHasHeartDisease() {
+        return hasHeartDisease;
+    }
+
+    public void setHasHeartDisease(boolean hasHeartDisease) {
+        this.hasHeartDisease = hasHeartDisease;
+    }
 
     public void addCircleOfCarePerson(CircleOfCareContact circleOfCareContact) {this.circleOfCare.add(circleOfCareContact) ;
     }
