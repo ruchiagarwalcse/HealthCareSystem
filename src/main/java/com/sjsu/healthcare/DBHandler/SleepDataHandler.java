@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.sjsu.healthcare.Model.ActivityData;
 import com.sjsu.healthcare.Model.SleepData;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -12,6 +13,7 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -51,6 +53,44 @@ public class SleepDataHandler
             ex.printStackTrace();
         }
         catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+        return sleepDataList;
+    }
+
+    public List<SleepData> getSleepDataForLastDayAllPatients()
+    {
+        //Since Mongodb stores date and time in UTC, convert time to UTC to query
+        ArrayList<SleepData> sleepDataList = new ArrayList<SleepData>();
+        //get today's date in UTC timezone
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        DateTime lastDay = today.minusDays(1);
+        SleepData sleepData = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+
+        try
+        {
+            coll = MongoFactory.getConnection().getCollection("sleepData");
+            BasicDBObject query = new BasicDBObject("startTime", new BasicDBObject("$lt", today.toDate()).append("$gte", lastDay.toDate()));
+            DBCursor cur = coll.find(query);
+            while(cur.hasNext())
+            {
+                DBObject obj = cur.next();
+                sleepData = new SleepData();
+                sleepData.setId(obj.get("_id").toString());
+                sleepData.setPatientId(obj.get("patientId").toString());
+                sleepData.setStartTime(new Date(obj.get("startTime").toString()));
+                sleepData.setAwakeningsCount((Integer) obj.get("awakeningsCount"));
+                sleepData.setMinutesAsleep((Integer) obj.get("minutesAsleep"));
+                sleepData.setMinutesAwake((Integer) obj.get("minutesAwake"));
+                sleepData.setTimeInBed((Integer) obj.get("timeInBed"));
+                sleepData.setEfficiency((Integer)obj.get("efficiency"));
+                sleepDataList.add(sleepData);
+            }
+
+        } catch (UnknownHostException e)
         {
             e.printStackTrace();
         }

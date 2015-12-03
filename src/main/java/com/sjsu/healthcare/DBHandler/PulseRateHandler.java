@@ -2,10 +2,7 @@ package com.sjsu.healthcare.DBHandler;
 
 import com.mongodb.*;
 import com.sjsu.healthcare.Messaging.SmsSender;
-import com.sjsu.healthcare.Model.CircleOfCareContact;
-import com.sjsu.healthcare.Model.Notification;
-import com.sjsu.healthcare.Model.Patient;
-import com.sjsu.healthcare.Model.PulseRateData;
+import com.sjsu.healthcare.Model.*;
 import com.sjsu.healthcare.Repository.NotificationRepository;
 import com.sjsu.healthcare.Service.EmailService;
 import org.bson.types.ObjectId;
@@ -14,9 +11,7 @@ import org.joda.time.DateTimeZone;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 
 /**
@@ -59,6 +54,66 @@ public class PulseRateHandler
             e.printStackTrace();
         }
         return pulseRateList;
+    }
+
+    public PulseRateData getLastDayRestingPulseRate(String patientId)
+    {
+        DBCollection coll = null;
+        PulseRateData maxOccuringKey =null;
+        int maxOccuringValue = 0;
+
+        //hashmap of pulserate and count of pulserate
+        Map<PulseRateData, Integer> mapPulseRate = new HashMap<>();
+        try
+        {
+            DateTimeZone timeZone = DateTimeZone.forID("UTC");
+            DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            DateTime lastDay = today.minusDays(1);
+            PulseRateData pulseRate = null;
+            coll = MongoFactory.getConnection().getCollection("pulseRateData");
+            BasicDBObject query = new BasicDBObject("patientId",patientId);
+            query.append("date", new BasicDBObject("$lt", today.toDate()).append("$gte", lastDay.toDate()));
+            DBCursor cur = coll.find(query);
+            int i =0;
+            while(cur.hasNext())
+            {
+                DBObject obj = cur.next();
+
+                pulseRate = new PulseRateData();
+                pulseRate.setId(obj.get("_id").toString());
+                pulseRate.setPatientId(obj.get("patientId").toString());
+                pulseRate.setPulseRate((Integer)obj.get("pulseRate"));
+                pulseRate.setDate(new Date(obj.get("date").toString()));
+
+                //initialise maxOccuring key and value to the first element
+                if(i == 0)
+                {
+                    maxOccuringKey = pulseRate;
+                    maxOccuringValue = 1;
+                    i++;
+                }
+                if(mapPulseRate.containsKey(pulseRate))
+                {
+                    int count = mapPulseRate.get(pulseRate)+1;
+                    mapPulseRate.put(pulseRate,count);
+                    if(count > maxOccuringValue)
+                    {
+                        maxOccuringValue = count;
+                        maxOccuringKey = pulseRate;
+                    }
+                }
+                else
+                {
+                    mapPulseRate.put(pulseRate, 1);
+                }
+            }
+        }
+        catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+
+        return maxOccuringKey;
     }
 
     public int notifyAbnormalPulseRate(PulseRateData minPulseRateObject,PulseRateData maxPulseRateObject,

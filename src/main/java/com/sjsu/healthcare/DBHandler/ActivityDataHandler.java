@@ -98,4 +98,37 @@ public class ActivityDataHandler {
         }
         return activityData;
     }
+
+    public List<ActivityData> getActivityForLastDayAllPatients()
+    {
+        //Since Mongodb stores date and time in UTC, convert time to UTC to query
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        DateTime lastDay = today.minusDays(1);
+        ActivityData activityData = null;
+        List<ActivityData> activityDataList = new ArrayList<ActivityData>();
+        try
+        {
+            coll = MongoFactory.getConnection().getCollection("activityData");
+            BasicDBObject query = new BasicDBObject("date", new BasicDBObject("$lt", today.toDate()).append("$gte", lastDay.toDate()));
+            //query.append("date", new BasicDBObject("$gte", lastDay.toDate()));
+            //DBObject obj = coll.findOne(query);
+            DBCursor cur = coll.find(query);
+            while(cur.hasNext())
+            {
+                DBObject obj = cur.next();
+                activityData = new ActivityData();
+                activityData.setPatientId(obj.get("patientId").toString());
+                activityData.setId(obj.get("_id").toString());
+                activityData.setStepCount((Integer)obj.get("stepCount"));
+                activityData.setDate(new Date(obj.get("date").toString()));
+                activityDataList.add(activityData);
+            }
+
+        } catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+        return activityDataList;
+    }
 }

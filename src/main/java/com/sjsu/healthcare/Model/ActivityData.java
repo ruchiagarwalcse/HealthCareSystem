@@ -2,6 +2,8 @@ package com.sjsu.healthcare.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +46,10 @@ public class ActivityData {
     public void setDate() {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
         this.date = cal.getTime();
+        /*DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        DateTime lastDay = today.minusDays(1);
+        this.date = lastDay.toDate();*/
     }
 
     public int getStepCount() {

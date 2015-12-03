@@ -2,6 +2,7 @@ package com.sjsu.healthcare.Service;
 
 import com.sjsu.healthcare.Model.Patient;
 import com.sjsu.healthcare.Model.PulseRateData;
+import com.sjsu.healthcare.Model.SleepData;
 import com.sjsu.healthcare.Repository.NotificationRepository;
 import com.sjsu.healthcare.Repository.PatientRepository;
 import com.sjsu.healthcare.Repository.PulseRateDataRepository;
@@ -98,5 +99,24 @@ public class PulseRateDataService {
             return new ResponseEntity("No pulse data found for this user ", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(pulseRateHandler.getPulseRateBetween(patientID, days),HttpStatus.OK );
+    }
+
+    //Get all patient's resting pulse rate data, for last day
+    @RequestMapping(value = "api/restingpulserateforpatients", method = RequestMethod.GET)
+    public ResponseEntity getRestingPulseRateForAllPatients()
+    {
+        List<Patient> patients = patientRepository.findAll();
+        List<PulseRateData> pulseRateDataList = new ArrayList<PulseRateData>();
+        for(Patient patient: patients) {
+            PulseRateData restingPulseRate = pulseRateHandler.getLastDayRestingPulseRate(patient.getId());
+            if (restingPulseRate != null) {
+                pulseRateDataList.add(restingPulseRate);
+            }
+        }
+        if(pulseRateDataList.isEmpty())
+        {
+            return new ResponseEntity("Cannot find resting pulse rate data for any patient", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(pulseRateDataList,HttpStatus.OK );
     }
 }

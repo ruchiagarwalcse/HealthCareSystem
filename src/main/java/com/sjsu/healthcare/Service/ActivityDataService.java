@@ -3,8 +3,6 @@ package com.sjsu.healthcare.Service;
 import com.sjsu.healthcare.Model.ActivityData;
 import com.sjsu.healthcare.Repository.ActivityDataRepository;
 import com.sjsu.healthcare.DBHandler.ActivityDataHandler;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
 
 @RestController
 public class ActivityDataService {
@@ -49,6 +47,18 @@ public class ActivityDataService {
            return new ResponseEntity("Cannot find activity for this patient", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(activityDataHandler.getActivityListFromRange(patientId, days),HttpStatus.OK );
+    }
+
+    //Get all patient's activity, for last day
+    @RequestMapping(value = "api/activitforpatients", method = RequestMethod.GET)
+    public ResponseEntity getActivityForAllPatients()
+    {
+        List<ActivityData> activityDataList = activityDataHandler.getActivityForLastDayAllPatients();
+        if(activityDataList.isEmpty())
+        {
+            return new ResponseEntity("Cannot find activity for any patient", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(activityDataList,HttpStatus.OK );
     }
 
 }
