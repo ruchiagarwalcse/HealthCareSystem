@@ -29,7 +29,7 @@ public class PatientService {
     public ResponseEntity patientPost(@RequestBody Patient p) {
         p = patientRepository.save(p);
         //:TODO: Validate the details here, email format should be proper
-        return new ResponseEntity(p.getId(), HttpStatus.CREATED);
+        return new ResponseEntity(p, HttpStatus.CREATED);
     }
 
     //Login patient with username and password
