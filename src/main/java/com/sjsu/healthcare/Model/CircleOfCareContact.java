@@ -1,6 +1,6 @@
 package com.sjsu.healthcare.Model;
 
-import java.util.UUID;
+import org.bson.types.ObjectId;
 
 public class CircleOfCareContact {
     /*High: Doctor
@@ -8,18 +8,18 @@ public class CircleOfCareContact {
       Low: Family Member*/
 
     public CircleOfCareContact() {
-	this.id = UUID.randomUUID();
+        this.id = new ObjectId().toString();
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
     public void setId() {
-        this.id = UUID.randomUUID();
+        this.id = new ObjectId().toString();
     }
 
-    private UUID id;
+    private String id;
     private String name;
     private long phoneNumber;
     private String email;

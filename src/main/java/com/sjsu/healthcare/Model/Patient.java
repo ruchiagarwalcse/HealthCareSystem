@@ -162,7 +162,7 @@ public class Patient {
     }
 
     //Get circle of care contact created by id
-    public CircleOfCareContact getCircleOfCareContactById(UUID id) {
+    public CircleOfCareContact getCircleOfCareContactById(String id) {
         CircleOfCareContact circleOfCareContact = null;
         for (CircleOfCareContact c : this.circleOfCare)
         {
@@ -188,7 +188,7 @@ public class Patient {
     }
 
     //Remove circle of care contact using id
-    public void removeCircleOfCareContactById(UUID id) {
+    public void removeCircleOfCareContactById(String id) {
         CircleOfCareContact circleOfCareContact = getCircleOfCareContactById(id);
         this.circleOfCare.remove(circleOfCareContact);
     }

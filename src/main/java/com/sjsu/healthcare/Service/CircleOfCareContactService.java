@@ -29,7 +29,7 @@ public class CircleOfCareContactService {
 
     //Get circle of care contact for a patient by id
     @RequestMapping(value = "api/patient/{pid}/circleofcarecontact/{cid}", method = RequestMethod.GET)
-    public CircleOfCareContact circleOfCareContactGetById(@PathVariable("pid") String patientId, @PathVariable("cid") UUID circleOfCareContactId) {
+    public CircleOfCareContact circleOfCareContactGetById(@PathVariable("pid") String patientId, @PathVariable("cid") String circleOfCareContactId) {
         Patient patient = patientRepository.findById(patientId);
         if (patient != null){
             return patient.getCircleOfCareContactById(circleOfCareContactId);
@@ -59,7 +59,7 @@ public class CircleOfCareContactService {
 
     //Delete circle of care contact for a patient by id
     @RequestMapping(value="api/patient/{pid}/circleofcarecontact/{cid}", method = RequestMethod.DELETE)
-    public ResponseEntity circleOfCareContactDeleteById(@PathVariable("pid") String patientId, @PathVariable("cid") UUID circleOfCareContactId) {
+    public ResponseEntity circleOfCareContactDeleteById(@PathVariable("pid") String patientId, @PathVariable("cid") String circleOfCareContactId) {
         Patient patient = patientRepository.findById(patientId);
         patient.removeCircleOfCareContactById(circleOfCareContactId);
         patientRepository.save(patient);
@@ -78,7 +78,7 @@ public class CircleOfCareContactService {
     //get CIrcleofCare Contact for a patient by patientid and COCID
     @RequestMapping(value = "api/patient/{pid}/circleofcarebyid/{cid}", method = RequestMethod.GET)
     public ResponseEntity getCircleOfCareContactsById(@PathVariable("pid") String patientId,
-                                                      @PathVariable("cid") UUID circleOfCareContactId)
+                                                      @PathVariable("cid") String circleOfCareContactId)
     {
         Patient patient = patientRepository.findById(patientId);
         if(patient == null)
@@ -95,7 +95,7 @@ public class CircleOfCareContactService {
     //update CIrcleofCare Contact for a patient by patientid and COCID
     @RequestMapping(value = "api/patient/{pid}/updatecircleofcare/{cid}", method = RequestMethod.PUT)
     public ResponseEntity updateCircleOfCareContactById(@PathVariable("pid") String patientId,
-                                                        @PathVariable("cid") UUID circleOfCareContactId,
+                                                        @PathVariable("cid") String circleOfCareContactId,
                                                             @RequestBody CircleOfCareContact c)
     {
         Patient patient = patientRepository.findById(patientId);
