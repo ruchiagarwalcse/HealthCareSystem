@@ -27,6 +27,9 @@ public class PatientService {
     //Save Patient
     @RequestMapping(value = "api/patients", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity patientPost(@RequestBody Patient p) {
+//
+//        String hashedPass = Patient.hashPassword(p.getPassword());
+//        p.setPassword(hashedPass);
         p = patientRepository.save(p);
         //:TODO: Validate the details here, email format should be proper
         return new ResponseEntity(p, HttpStatus.CREATED);

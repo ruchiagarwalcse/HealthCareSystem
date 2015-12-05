@@ -6,6 +6,7 @@ import com.sjsu.healthcare.Model.SleepData;
 import com.sjsu.healthcare.Repository.SleepDataRepository;
 import com.sjsu.healthcare.DBHandler.SleepDataHandler;
 import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,9 @@ public class SleepDataService {
     @RequestMapping(value = "api/sleep", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity sleepDataPost(@RequestBody SleepData sleepData) {
         sleepDataRepository.save(sleepData);
-        return new ResponseEntity(sleepData.getPatientId(),HttpStatus.CREATED);
+        JSONObject obj = new JSONObject();
+        obj.put("patientID", sleepData.getPatientId());
+        return new ResponseEntity(obj,HttpStatus.CREATED);
     }
 
     //Get all data for a patient
