@@ -24,7 +24,7 @@ public class CircleOfCareContactService {
         circleOfCareContact.setId();
         patient.addCircleOfCarePerson(circleOfCareContact);
         patientRepository.save(patient);
-        return new ResponseEntity(circleOfCareContact.getId(),HttpStatus.CREATED);
+        return new ResponseEntity(circleOfCareContact,HttpStatus.CREATED);
     }
 
     //Get circle of care contact for a patient by id
@@ -63,7 +63,7 @@ public class CircleOfCareContactService {
         Patient patient = patientRepository.findById(patientId);
         patient.removeCircleOfCareContactById(circleOfCareContactId);
         patientRepository.save(patient);
-        return new ResponseEntity(patientId,HttpStatus.NO_CONTENT);
+        return new ResponseEntity(circleOfCareContactId,HttpStatus.NO_CONTENT);
     }
 
     //Delete circle of care contact for a patient by level
