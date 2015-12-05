@@ -231,7 +231,7 @@ public class DecisionTreeService {
         {
             return new ResponseEntity("No Patient found for the given Patient ID", HttpStatus.NOT_FOUND);
         }
-        patient.setHasHeartDisease(false);
+        patient.setHasHeartDisease(!patient.getHasHeartDisease());
         DecisionTreeHandler handler = new DecisionTreeHandler();
         //get all patient data required for determining heart disease
         HeartDiseaseData heartDiseaseData = handler.
@@ -253,13 +253,8 @@ public class DecisionTreeService {
         } catch (BadDecisionException e) {
             e.printStackTrace();
         }
-        if(decision)
-        {
-            System.out.println("Patient has heart disease , going to send notification...");
-            return new ResponseEntity("Oops! Looks like you still have a heart problem!", HttpStatus.OK);
-        }
-        return new ResponseEntity("Sorry, looks like our previous decision was wrong. Hurray, you do" +
-                " not have any heart disease!", HttpStatus.OK);
+        System.out.println("Patient has heart disease , going to send notification...");
+            return new ResponseEntity(patient.getHasHeartDisease(), HttpStatus.OK);
     }
 
     private ModelData insertPatientDataIntoModelData(HeartDiseaseData heartDiseaseData) {

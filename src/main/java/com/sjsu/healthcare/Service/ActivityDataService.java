@@ -3,6 +3,7 @@ package com.sjsu.healthcare.Service;
 import com.sjsu.healthcare.Model.ActivityData;
 import com.sjsu.healthcare.Repository.ActivityDataRepository;
 import com.sjsu.healthcare.DBHandler.ActivityDataHandler;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,9 @@ public class ActivityDataService {
         System.out.println(new Date());
         activityData.setDate();
         activityDataRepository.save(activityData);
-        return new ResponseEntity(activityData.getPatientId(),HttpStatus.CREATED);
+        JSONObject obj = new JSONObject();
+        obj.put("patientID", activityData.getPatientId());
+        return new ResponseEntity(obj,HttpStatus.CREATED);
     }
 
     //Get all data for a patient
