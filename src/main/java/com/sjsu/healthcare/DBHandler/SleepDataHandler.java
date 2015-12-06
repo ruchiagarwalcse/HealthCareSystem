@@ -97,4 +97,42 @@ public class SleepDataHandler
         return sleepDataList;
     }
 
+    public SleepData getSleepDataForLastDay()
+    {
+        //Since Mongodb stores date and time in UTC, convert time to UTC to query
+        ArrayList<SleepData> sleepDataList = new ArrayList<SleepData>();
+        //get today's date in UTC timezone
+        DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        DateTime lastDay = today.minusDays(1);
+        SleepData sleepData = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+
+        try
+        {
+            coll = MongoFactory.getConnection().getCollection("sleepData");
+            BasicDBObject query = new BasicDBObject("startTime", new BasicDBObject("$lt", today.toDate()).append("$gte", lastDay.toDate()));
+            DBCursor cur = coll.find(query);
+            while(cur.hasNext())
+            {
+                DBObject obj = cur.next();
+                sleepData = new SleepData();
+                sleepData.setId(obj.get("_id").toString());
+                sleepData.setPatientId(obj.get("patientId").toString());
+                sleepData.setStartTime(new Date(obj.get("startTime").toString()));
+                sleepData.setAwakeningsCount((Integer) obj.get("awakeningsCount"));
+                sleepData.setMinutesAsleep((Integer) obj.get("minutesAsleep"));
+                sleepData.setMinutesAwake((Integer) obj.get("minutesAwake"));
+                sleepData.setTimeInBed((Integer) obj.get("timeInBed"));
+                sleepData.setEfficiency((Integer)obj.get("efficiency"));
+                sleepDataList.add(sleepData);
+            }
+
+        } catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+        sleepData = sleepDataList.get(0);
+        return sleepData;
+    }
 }

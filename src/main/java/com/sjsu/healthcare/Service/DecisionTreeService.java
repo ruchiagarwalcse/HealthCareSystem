@@ -1,12 +1,15 @@
 package com.sjsu.healthcare.Service;
 
+import com.mongodb.util.JSON;
 import com.sjsu.healthcare.DBHandler.DecisionTreeHandler;
+import com.sjsu.healthcare.DBHandler.SleepDataHandler;
 import com.sjsu.healthcare.DecisionTree.BadDecisionException;
 import com.sjsu.healthcare.DecisionTree.DecisionTree;
 import com.sjsu.healthcare.DecisionTree.UnknownDecisionException;
 import com.sjsu.healthcare.Model.*;
 import com.sjsu.healthcare.Repository.*;
 import org.bson.types.ObjectId;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import static org.junit.Assert.*;
 import java.util.*;
+
 
 @RestController
 public class DecisionTreeService {
@@ -100,6 +104,26 @@ public class DecisionTreeService {
                     }
             }
         }
+    }
+
+    @RequestMapping(value = "api/getAppDashboard/{pid}", method = RequestMethod.GET)
+    public ResponseEntity decisionService(@PathVariable("pid") String patientId){
+        Patient patient = patientRepository.findById(patientId);
+        DecisionTreeHandler handler = new DecisionTreeHandler();
+        SleepDataHandler sleepDataHandler = new SleepDataHandler();
+        HeartDiseaseData heartDiseaseData = handler.getLastDayPatientDataForDecisionTree(patient);
+        String heartDiseaseDataString = "{\"cholestrol\" : " + heartDiseaseData.getCholestrol() +
+                ", \" maxPulseRate\": " +   heartDiseaseData.getMaxPulseRate() +
+                ", \"restingPulseRate\": " +  heartDiseaseData.getRestingPulseRate() +
+                ", \"stepCount\": " +   heartDiseaseData.getStepCount() +
+                ", \"bmi\": " +   heartDiseaseData.getBmi() +
+                ", \"decision\": " + heartDiseaseData.gettDecision() +
+                ", \"patientID\": " + heartDiseaseData.getPatientID() +
+                ", \"age\": " +  heartDiseaseData.getAge() +
+                ", \"circleOfCareNotified\": " +  heartDiseaseData.getCircleOfCareNotified() +
+                ", \"sleepEfficiency\": " + sleepDataHandler.getSleepDataForLastDay().getEfficiency() +
+                "}";
+        return new ResponseEntity(heartDiseaseDataString, HttpStatus.OK);
     }
 
     /*@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
