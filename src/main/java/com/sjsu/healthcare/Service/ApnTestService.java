@@ -23,7 +23,8 @@ public class ApnTestService {
                     new PushManager<SimpleApnsPushNotification>(
                             ApnsEnvironment.getSandboxEnvironment(),
                             //SSLContextUtil.createDefaultSSLContext("/Users/piyushmittal/Desktop/healthcare.p12", "password"),
-                            SSLContextUtil.createDefaultSSLContext("C:/Users/Sindhu Kashyap/Documents/healthcare.p12", "password"),
+                            //SSLContextUtil.createDefaultSSLContext("C:/Users/Sindhu Kashyap/Documents/healthcare.p12", "password"),
+                            SSLContextUtil.createDefaultSSLContext("Data/Certificate/healthcare.p12", "password"),
                             null, // Optional: custom event loop group
                             null, // Optional: custom ExecutorService for calling listeners
                             null, // Optional: custom BlockingQueue implementation
