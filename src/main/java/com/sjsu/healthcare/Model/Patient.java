@@ -5,9 +5,7 @@ import org.hibernate.validator.constraints.Email;
 import org.mindrot.jbcrypt.BCrypt;
 //import org.springmodules.validation.bean.conf.loader.annotation.handler.Email;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class Patient {
 
@@ -17,6 +15,8 @@ public class Patient {
     @JsonFormat(pattern = "MM-dd-yyyy")
     private Date dateOfBirth;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private Date createdAt;
     private float height;
     private int weight;
     private int bmi;
@@ -46,6 +46,19 @@ public class Patient {
 
     public Patient(){
 
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setCreatedAt() {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        this.createdAt = cal.getTime();
     }
 
     public String getId() {
