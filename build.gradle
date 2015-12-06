@@ -38,6 +38,7 @@ dependencies {
     compile 'joda-time:joda-time:2.9'
     compile 'com.twilio.sdk:twilio-java-sdk:5.3.0'
     compile 'org.mindrot:jbcrypt:0.3m'
+    compile 'com.relayrides:pushy:0.4.3'
 }
 configurations {
     compile.exclude group: 'org.slf4j', module: 'slf4j-log4j12'

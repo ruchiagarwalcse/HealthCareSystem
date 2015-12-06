@@ -80,6 +80,10 @@ public class HeartDiseaseData
         this.decision = decision;
     }
 
+    public boolean gettDecision() {
+        return this.decision;
+    }
+
     public boolean getCircleOfCareNotified() {
         return circleOfCareNotified;
     }
