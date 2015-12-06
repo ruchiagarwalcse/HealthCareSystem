@@ -26,8 +26,11 @@ public class PulseRateHandler
     {
         ArrayList<Integer> pulseRateList = new ArrayList<Integer>();
         //get today's date in UTC timezone
-        DateTimeZone timeZone = DateTimeZone.forID("UTC");
-        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        Date today1 = cal.getTime();
+        DateTime today = new DateTime(today1).withTimeAtStartOfDay();
         //get (today - days)'s date
         DateTime oldDate = today.minusDays(days);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -67,8 +70,11 @@ public class PulseRateHandler
         Map<PulseRateData, Integer> mapPulseRate = new HashMap<>();
         try
         {
-            DateTimeZone timeZone = DateTimeZone.forID("UTC");
-            DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+            //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+            Date today1 = cal.getTime();
+            DateTime today = new DateTime(today1).withTimeAtStartOfDay();
             DateTime lastDay = today.minusDays(1);
             PulseRateData pulseRate = null;
             coll = MongoFactory.getConnection().getCollection("pulseRateData");

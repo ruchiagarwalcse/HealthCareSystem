@@ -112,18 +112,8 @@ public class DecisionTreeService {
         DecisionTreeHandler handler = new DecisionTreeHandler();
         SleepDataHandler sleepDataHandler = new SleepDataHandler();
         HeartDiseaseData heartDiseaseData = handler.getLastDayPatientDataForDecisionTree(patient);
-        String heartDiseaseDataString = "{\"cholestrol\" : " + heartDiseaseData.getCholestrol() +
-                ", \" maxPulseRate\": " +   heartDiseaseData.getMaxPulseRate() +
-                ", \"restingPulseRate\": " +  heartDiseaseData.getRestingPulseRate() +
-                ", \"stepCount\": " +   heartDiseaseData.getStepCount() +
-                ", \"bmi\": " +   heartDiseaseData.getBmi() +
-                ", \"decision\": " + heartDiseaseData.gettDecision() +
-                ", \"patientID\": " + heartDiseaseData.getPatientID() +
-                ", \"age\": " +  heartDiseaseData.getAge() +
-                ", \"circleOfCareNotified\": " +  heartDiseaseData.getCircleOfCareNotified() +
-                ", \"sleepEfficiency\": " + sleepDataHandler.getSleepDataForLastDay().getEfficiency() +
-                "}";
-        return new ResponseEntity(heartDiseaseDataString, HttpStatus.OK);
+        heartDiseaseData.setSleepEfficiency(sleepDataHandler.getSleepDataForLastDay().getEfficiency());
+        return new ResponseEntity(heartDiseaseData, HttpStatus.OK);
     }
 
     /*@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
@@ -256,6 +246,7 @@ public class DecisionTreeService {
             return new ResponseEntity("No Patient found for the given Patient ID", HttpStatus.NOT_FOUND);
         }
         patient.setHasHeartDisease(!patient.getHasHeartDisease());
+        patientRepository.save(patient);
         DecisionTreeHandler handler = new DecisionTreeHandler();
         //get all patient data required for determining heart disease
         HeartDiseaseData heartDiseaseData = handler.
@@ -270,13 +261,13 @@ public class DecisionTreeService {
         createTree();
 
         //call getDecision which gets the decision for the patient
-        boolean decision = false;
+        /*boolean decision = false;
         try {
             decision = getDecision(heartDiseaseData);
             heartDiseaseData.setDecision(decision);
         } catch (BadDecisionException e) {
             e.printStackTrace();
-        }
+        } */
         System.out.println("Patient has heart disease , going to send notification...");
             return new ResponseEntity(patient.getHasHeartDisease(), HttpStatus.OK);
     }
