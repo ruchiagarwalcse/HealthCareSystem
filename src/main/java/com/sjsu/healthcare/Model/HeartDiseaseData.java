@@ -9,6 +9,7 @@ public class HeartDiseaseData
     int cholestrol;
     int maxPulseRate;
     int restingPulseRate;
+    int sleepEfficiency;
     int stepCount;
     int bmi;
     boolean decision;
@@ -38,6 +39,14 @@ public class HeartDiseaseData
 
     public void setCholestrol(int cholestrol) {
         this.cholestrol = cholestrol;
+    }
+
+    public int getSleepEfficiency() {
+        return this.sleepEfficiency;
+    }
+
+    public void setSleepEfficiency(int sleepEfficiency) {
+        this.sleepEfficiency = sleepEfficiency;
     }
 
     public int getMaxPulseRate() {

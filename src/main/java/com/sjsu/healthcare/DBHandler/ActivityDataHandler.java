@@ -106,8 +106,11 @@ public class ActivityDataHandler {
     public ActivityData getActivityForLastTheDay(String patientId, Date date)
     {
         //Since Mongodb stores date and time in UTC, convert time to UTC to query
-        DateTimeZone timeZone = DateTimeZone.forID("UTC");
-        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        Date today1 = cal.getTime();
+        DateTime today = new DateTime(today1).withTimeAtStartOfDay();
         DateTime lastDay = today.minusDays(1);
         ActivityData activityData = null;
         try
@@ -141,8 +144,11 @@ public class ActivityDataHandler {
     public List<ActivityData> getActivityForLastDayAllPatients()
     {
         //Since Mongodb stores date and time in UTC, convert time to UTC to query
-        DateTimeZone timeZone = DateTimeZone.forID("UTC");
-        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        Date today1 = cal.getTime();
+        DateTime today = new DateTime(today1).withTimeAtStartOfDay();
         DateTime lastDay = today.minusDays(1);
         ActivityData activityData = null;
         List<ActivityData> activityDataList = new ArrayList<ActivityData>();

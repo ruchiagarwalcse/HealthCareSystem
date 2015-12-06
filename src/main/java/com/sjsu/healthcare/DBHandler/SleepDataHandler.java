@@ -11,10 +11,7 @@ import org.joda.time.DateTimeZone;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Sindhu Kashyap on 11/3/2015.
@@ -64,8 +61,11 @@ public class SleepDataHandler
         //Since Mongodb stores date and time in UTC, convert time to UTC to query
         ArrayList<SleepData> sleepDataList = new ArrayList<SleepData>();
         //get today's date in UTC timezone
-        DateTimeZone timeZone = DateTimeZone.forID("UTC");
-        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        Date today1 = cal.getTime();
+        DateTime today = new DateTime(today1).withTimeAtStartOfDay();
         DateTime lastDay = today.minusDays(1);
         SleepData sleepData = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -102,8 +102,11 @@ public class SleepDataHandler
         //Since Mongodb stores date and time in UTC, convert time to UTC to query
         ArrayList<SleepData> sleepDataList = new ArrayList<SleepData>();
         //get today's date in UTC timezone
-        DateTimeZone timeZone = DateTimeZone.forID("UTC");
-        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        Date today1 = cal.getTime();
+        DateTime today = new DateTime(today1).withTimeAtStartOfDay();
         DateTime lastDay = today.minusDays(1);
         SleepData sleepData = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);

@@ -112,18 +112,8 @@ public class DecisionTreeService {
         DecisionTreeHandler handler = new DecisionTreeHandler();
         SleepDataHandler sleepDataHandler = new SleepDataHandler();
         HeartDiseaseData heartDiseaseData = handler.getLastDayPatientDataForDecisionTree(patient);
-        String heartDiseaseDataString = "{\"cholestrol\" : " + heartDiseaseData.getCholestrol() +
-                ", \" maxPulseRate\": " +   heartDiseaseData.getMaxPulseRate() +
-                ", \"restingPulseRate\": " +  heartDiseaseData.getRestingPulseRate() +
-                ", \"stepCount\": " +   heartDiseaseData.getStepCount() +
-                ", \"bmi\": " +   heartDiseaseData.getBmi() +
-                ", \"decision\": " + heartDiseaseData.getDecision() +
-                ", \"patientID\": " + heartDiseaseData.getPatientID() +
-                ", \"age\": " +  heartDiseaseData.getAge() +
-                ", \"circleOfCareNotified\": " +  heartDiseaseData.getCircleOfCareNotified() +
-                ", \"sleepEfficiency\": " + sleepDataHandler.getSleepDataForLastDay().getEfficiency() +
-                "}";
-        return new ResponseEntity(heartDiseaseDataString, HttpStatus.OK);
+        heartDiseaseData.setSleepEfficiency(sleepDataHandler.getSleepDataForLastDay().getEfficiency());
+        return new ResponseEntity(heartDiseaseData, HttpStatus.OK);
     }
 
     /*@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)

@@ -70,7 +70,7 @@ public class DecisionTreeHandler {
         int stepCnt = new ActivityDataHandler().getActivityForLastTheDay(patient.getId(), new Date()) .getStepCount();
         heartDiseaseData.setStepCount(stepCnt);//sets the step count
         //get maxpulserate and resting pulserate for that day from the database
-        int []pulseData = getPulseRateDataForLastDay( patient.getId()) ;
+        int []pulseData = getPulseRateDataForLastDay(patient.getId()) ;
         //pulseData[0] is maxpulserate; pulseData[1] is mod of pulse rate;
         heartDiseaseData.setMaxPulseRate(pulseData[0]);
         heartDiseaseData.setRestingPulseRate(pulseData[1]);
@@ -92,8 +92,11 @@ public class DecisionTreeHandler {
         Map<Integer, Integer> mapPulseRate = new HashMap<>();
         try
         {
-            DateTimeZone timeZone = DateTimeZone.forID("UTC");
-            DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+            //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+            Date today1 = cal.getTime();
+            DateTime today = new DateTime(today1).withTimeAtStartOfDay();
             coll = MongoFactory.getConnection().getCollection("pulseRateData");
             BasicDBObject query = new BasicDBObject("patientId",patientId);
             query.append("date", new BasicDBObject("$gte", today.toDate()));
@@ -152,8 +155,11 @@ public class DecisionTreeHandler {
         Map<Integer, Integer> mapPulseRate = new HashMap<>();
         try
         {
-            DateTimeZone timeZone = DateTimeZone.forID("UTC");
-            DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+            //DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+            Date today1 = cal.getTime();
+            DateTime today = new DateTime(today1).withTimeAtStartOfDay();
             DateTime lastDay = today.minusDays(1);
             coll = MongoFactory.getConnection().getCollection("pulseRateData");
             BasicDBObject query = new BasicDBObject("patientId",patientId);
