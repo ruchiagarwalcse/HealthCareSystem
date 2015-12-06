@@ -68,8 +68,12 @@ public class ActivityDataHandler {
     public ActivityData getActivityForTheDay(String patientId, Date date)
     {
         //Since Mongodb stores date and time in UTC, convert time to UTC to query
-        DateTimeZone timeZone = DateTimeZone.forID("UTC");
-        DateTime today = new DateTime(timeZone).withTimeAtStartOfDay();
+        //DateTimeZone timeZone = DateTimeZone.forID("UTC");
+        //DateTime today1 = new DateTime(timeZone).withTimeAtStartOfDay();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+        Date today1 = cal.getTime();
+        DateTime today = new DateTime(today1).withTimeAtStartOfDay();
+
         ActivityData activityData = null;
         try
         {
