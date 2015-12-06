@@ -80,7 +80,7 @@ public class HeartDiseaseData
         this.decision = decision;
     }
 
-    public boolean gettDecision() {
+    public boolean getDecision() {
         return this.decision;
     }
 

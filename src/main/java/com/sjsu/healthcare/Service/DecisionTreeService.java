@@ -91,8 +91,8 @@ public class DecisionTreeService {
     }
 
 
-    //@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
-    @Scheduled(cron="0 45 23 * * ?")
+    @RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
+    //@Scheduled(cron="0 45 23 * * ?")
     public void decisionService(){
         List<Patient> patients = patientRepository.findAll();
         for(Patient p: patients){
@@ -117,7 +117,7 @@ public class DecisionTreeService {
                 ", \"restingPulseRate\": " +  heartDiseaseData.getRestingPulseRate() +
                 ", \"stepCount\": " +   heartDiseaseData.getStepCount() +
                 ", \"bmi\": " +   heartDiseaseData.getBmi() +
-                ", \"decision\": " + heartDiseaseData.gettDecision() +
+                ", \"decision\": " + heartDiseaseData.getDecision() +
                 ", \"patientID\": " + heartDiseaseData.getPatientID() +
                 ", \"age\": " +  heartDiseaseData.getAge() +
                 ", \"circleOfCareNotified\": " +  heartDiseaseData.getCircleOfCareNotified() +
@@ -256,6 +256,7 @@ public class DecisionTreeService {
             return new ResponseEntity("No Patient found for the given Patient ID", HttpStatus.NOT_FOUND);
         }
         patient.setHasHeartDisease(!patient.getHasHeartDisease());
+        patientRepository.save(patient);
         DecisionTreeHandler handler = new DecisionTreeHandler();
         //get all patient data required for determining heart disease
         HeartDiseaseData heartDiseaseData = handler.
