@@ -1,10 +1,12 @@
 package com.sjsu.healthcare.Service;
 
+import com.sjsu.healthcare.DBHandler.MedicationHandler;
 import com.sjsu.healthcare.Model.Patient;
 import com.sjsu.healthcare.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
@@ -100,5 +102,22 @@ public class MedicationService {
         return new ResponseEntity(medicationObj, HttpStatus.OK);
     }
 
+   // @RequestMapping(value="api/patient/{pid}/reminder", method = RequestMethod.GET)
+
+    //public ResponseEntity takeMedicationReminder(@PathVariable("pid") String patientId)
+    @Scheduled(fixedRate = 1000*60*15)
+   // @Scheduled(fixedRate = 1000*60*5)
+    public void takeMedicationReminder()
+    {
+        String patientId = "5663a57030a8e7028ab4bdd8";
+        Patient patient = patientRepository.findById(patientId);
+        if (patient == null)
+        {
+            return;
+        }
+        ArrayList<Medication> medicationList = patient.getMedication();
+        MedicationHandler handler = new MedicationHandler();
+        handler.getPushObject(patientRepository,medicationList);
+    }
 
 }

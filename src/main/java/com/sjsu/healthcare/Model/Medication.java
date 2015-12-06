@@ -43,7 +43,6 @@ public class Medication {
     public void setName(String name) {
         this.name = name;
     }
-
     public Date getTime() {
         return time;
     }
