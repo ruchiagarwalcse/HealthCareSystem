@@ -43,6 +43,7 @@ public class PulseRateHandler
             DBCursor cur = coll.find(query);
             while(cur.hasNext())
             {
+                PulseRateData data = new PulseRateData();
                 DBObject obj = cur.next();
                 String p = obj.get("pulseRate").toString();
                 pulseRateList.add(Integer.parseInt(p));

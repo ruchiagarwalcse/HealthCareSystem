@@ -14,15 +14,16 @@ import com.relayrides.pushy.apns.PushManagerConfiguration;
 
 @RestController
 public class ApnTestService {
-    @RequestMapping(value = "api/send", method = RequestMethod.GET)
-    public String sentNotification() {
+    //@RequestMapping(value = "api/send", method = RequestMethod.GET)
+    public String sentNotification(String message) {
         PushManager<SimpleApnsPushNotification> pushManager = null;
 
         try {
             pushManager =
                     new PushManager<SimpleApnsPushNotification>(
                             ApnsEnvironment.getSandboxEnvironment(),
-                            SSLContextUtil.createDefaultSSLContext("/Users/piyushmittal/Desktop/healthcare.p12", "password"),
+                            //SSLContextUtil.createDefaultSSLContext("/Users/piyushmittal/Desktop/healthcare.p12", "password"),
+                            SSLContextUtil.createDefaultSSLContext("C:/Users/Sindhu Kashyap/Documents/healthcare.p12", "password"),
                             null, // Optional: custom event loop group
                             null, // Optional: custom ExecutorService for calling listeners
                             null, // Optional: custom BlockingQueue implementation
@@ -35,7 +36,7 @@ public class ApnTestService {
 
             final ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
 
-            payloadBuilder.setAlertBody("Ring ring, Neo.");
+            payloadBuilder.setAlertBody(message);
             payloadBuilder.setSoundFileName("ring-ring.aiff");
 
             final String payload = payloadBuilder.buildWithDefaultMaximumLength();
