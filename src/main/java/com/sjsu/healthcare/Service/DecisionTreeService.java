@@ -91,8 +91,8 @@ public class DecisionTreeService {
     }
 
 
-    //@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
-    @Scheduled(cron="0 45 23 * * ?")
+    @RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
+    //@Scheduled(cron="0 45 23 * * ?")
     public void decisionService(){
         List<Patient> patients = patientRepository.findAll();
         for(Patient p: patients){
