@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.joda.time.DateTime;
+import java.util.Collections;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,7 @@ public class PulseRateDataService {
     @RequestMapping(value = "api/patient/{id}/pulserate", method = RequestMethod.GET)
     public ResponseEntity pulseRateDataGet(@PathVariable("id") String patientId) {
         ArrayList<PulseRateData> pulseRateData = pulseRateDataRepository.findByPatientId(patientId);
+        Collections.sort(pulseRateData);
         return new ResponseEntity(pulseRateData, HttpStatus.OK);
     }
 

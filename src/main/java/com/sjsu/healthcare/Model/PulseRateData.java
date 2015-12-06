@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-public class PulseRateData {
+public class PulseRateData implements Comparable<PulseRateData> {
     private String id;
     private String patientId;
 
@@ -12,6 +12,10 @@ public class PulseRateData {
     private Date date;
 
     private int pulseRate;
+
+    public int compareTo(PulseRateData other) {
+        return date.compareTo(other.date);
+    }
 
     public String getId() {
         return id;
