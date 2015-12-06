@@ -91,8 +91,8 @@ public class DecisionTreeService {
     }
 
 
-    @RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
-    //@Scheduled(cron="0 45 23 * * ?")
+    //@RequestMapping(value = "api/testDecision", method = RequestMethod.GET)
+    @Scheduled(cron="0 45 23 * * ?")
     public void decisionService(){
         List<Patient> patients = patientRepository.findAll();
         for(Patient p: patients){
@@ -271,13 +271,13 @@ public class DecisionTreeService {
         createTree();
 
         //call getDecision which gets the decision for the patient
-        boolean decision = false;
+        /*boolean decision = false;
         try {
             decision = getDecision(heartDiseaseData);
             heartDiseaseData.setDecision(decision);
         } catch (BadDecisionException e) {
             e.printStackTrace();
-        }
+        } */
         System.out.println("Patient has heart disease , going to send notification...");
             return new ResponseEntity(patient.getHasHeartDisease(), HttpStatus.OK);
     }
