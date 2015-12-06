@@ -28,8 +28,9 @@ public class PatientService {
     @RequestMapping(value = "api/patients", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity patientPost(@RequestBody Patient p) {
 //
-//        String hashedPass = Patient.hashPassword(p.getPassword());
-//        p.setPassword(hashedPass);
+        String hashedPass = Patient.hashPassword(p.getPassword());
+        p.setPassword(hashedPass);
+        p.setCreatedAt();
         p = patientRepository.save(p);
         //:TODO: Validate the details here, email format should be proper
         return new ResponseEntity(p, HttpStatus.CREATED);
@@ -48,7 +49,8 @@ public class PatientService {
         {
             return new ResponseEntity("Invalid username", HttpStatus.NOT_FOUND);
         }
-        if(patient.getPassword().equals(p.getPassword()))
+        if(Patient.checkPassword(p.getPassword(),patient.getPassword()))
+       // if(patient.getPassword().equals(p.getPassword()))
         {
             return new ResponseEntity(patient.getId(), HttpStatus.OK);
         }
@@ -68,7 +70,8 @@ public class PatientService {
         {
             return new ResponseEntity("Invalid username", HttpStatus.NOT_FOUND);
         }
-        if(patient.getPassword().equals(p.getPassword()))
+        if(Patient.checkPassword(p.getPassword(),patient.getPassword()))
+        //if(patient.getPassword().equals(p.getPassword()))
         {
             return new ResponseEntity(patient, HttpStatus.OK);
         }
