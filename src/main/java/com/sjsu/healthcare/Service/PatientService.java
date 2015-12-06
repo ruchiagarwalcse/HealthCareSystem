@@ -132,7 +132,9 @@ public class PatientService {
         }
 
         if (p.getPassword() != null) {
-            patient.setPassword(p.getPassword());
+            String hashedPass = Patient.hashPassword(p.getPassword());
+            patient.setPassword(hashedPass);
+
         }
 
         if (p.getFitbitUsername() != null) {
